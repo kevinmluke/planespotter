@@ -1,0 +1,368 @@
+# ICAO type designator,family key,display name[,rarity override]
+# Airbus
+BCS1,a220,Airbus A220-100
+BCS3,a220,Airbus A220-300
+A318,a320,Airbus A318
+A319,a320,Airbus A319
+A320,a320,Airbus A320
+A321,a320,Airbus A321
+A19N,a320,Airbus A319neo
+A20N,a320,Airbus A320neo
+A21N,a320,Airbus A321neo
+A30B,a300,Airbus A300
+A306,a300,Airbus A300-600
+A3ST,beluga,Airbus A300 Beluga
+A310,a300,Airbus A310
+A332,a330,Airbus A330-200
+A333,a330,Airbus A330-300
+A337,belugaxl,Airbus BelugaXL
+A338,a330,Airbus A330-800neo
+A339,a330,Airbus A330-900neo
+A342,a340,Airbus A340-200
+A343,a340,Airbus A340-300
+A345,a340,Airbus A340-500
+A346,a340,Airbus A340-600
+A359,a350,Airbus A350-900
+A35K,a350,Airbus A350-1000
+A388,a380,Airbus A380
+# Boeing
+B712,b717,Boeing 717
+B721,b727,Boeing 727-100
+B722,b727,Boeing 727-200
+B732,b737,Boeing 737-200,40
+B733,b737,Boeing 737-300
+B734,b737,Boeing 737-400
+B735,b737,Boeing 737-500
+B736,b737,Boeing 737-600
+B737,b737,Boeing 737-700
+B738,b737,Boeing 737-800
+B739,b737,Boeing 737-900
+B37M,b737max,Boeing 737 MAX 7
+B38M,b737max,Boeing 737 MAX 8
+B39M,b737max,Boeing 737 MAX 9
+B3XM,b737max,Boeing 737 MAX 10
+P8,b737,Boeing P-8 Poseidon,70
+E737,awacs,Boeing E-7 Wedgetail
+B741,b747,Boeing 747-100,70
+B742,b747,Boeing 747-200,65
+B743,b747,Boeing 747-300,65
+B744,b747,Boeing 747-400
+B748,b747,Boeing 747-8
+B74S,b747,Boeing 747SP,85
+BLCF,dreamlifter,Boeing 747 Dreamlifter
+B752,b757,Boeing 757-200
+B753,b757,Boeing 757-300
+B762,b767,Boeing 767-200
+B763,b767,Boeing 767-300
+B764,b767,Boeing 767-400
+K46,b767,Boeing KC-46 Pegasus,70
+E767,awacs,Boeing E-767
+B772,b777,Boeing 777-200
+B773,b777,Boeing 777-300
+B77L,b777,Boeing 777-200LR
+B77W,b777,Boeing 777-300ER
+B778,b777,Boeing 777-8
+B779,b777,Boeing 777-9,40
+B788,b787,Boeing 787-8
+B789,b787,Boeing 787-9
+B78X,b787,Boeing 787-10
+B703,kc135,Boeing 707-300
+K35R,kc135,Boeing KC-135 Stratotanker
+K35E,kc135,Boeing KC-135E
+C135,kc135,Boeing C-135
+R135,kc135,Boeing RC-135
+E6,kc135,Boeing E-6 Mercury
+E3TF,awacs,Boeing E-3 Sentry
+E3CF,awacs,Boeing E-3 Sentry
+# McDonnell Douglas
+MD81,md80,McDonnell Douglas MD-81
+MD82,md80,McDonnell Douglas MD-82
+MD83,md80,McDonnell Douglas MD-83
+MD87,md80,McDonnell Douglas MD-87
+MD88,md80,McDonnell Douglas MD-88
+MD90,md80,McDonnell Douglas MD-90
+DC93,md80,Douglas DC-9,55
+DC10,dc10,McDonnell Douglas DC-10
+MD11,dc10,McDonnell Douglas MD-11,40
+# Embraer / Bombardier / regionals
+E170,ejet,Embraer E170
+E75L,ejet,Embraer E175
+E75S,ejet,Embraer E175
+E190,ejet,Embraer E190
+E195,ejet,Embraer E195
+E290,ejet,Embraer E190-E2
+E295,ejet,Embraer E195-E2
+E135,erj,Embraer ERJ-135
+E145,erj,Embraer ERJ-145
+E35L,lightjet,Embraer Legacy 600
+CRJ1,crj,Bombardier CRJ100
+CRJ2,crj,Bombardier CRJ200
+CRJ7,crj,Bombardier CRJ700
+CRJ9,crj,Bombardier CRJ900
+CRJX,crj,Bombardier CRJ1000
+AT43,atr,ATR 42-300
+AT45,atr,ATR 42-500
+AT46,atr,ATR 42-600
+AT72,atr,ATR 72
+AT75,atr,ATR 72-500
+AT76,atr,ATR 72-600
+DH8A,dash8,Dash 8-100
+DH8B,dash8,Dash 8-200
+DH8C,dash8,Dash 8-300
+DH8D,dash8,Dash 8-400
+SF34,saab,Saab 340
+SB20,saab,Saab 2000
+D328,saab,Dornier 328
+J328,f100,Dornier 328JET
+F70,f100,Fokker 70
+F100,f100,Fokker 100
+F50,saab,Fokker 50
+B461,bae146,BAe 146-100
+B462,bae146,BAe 146-200
+B463,bae146,BAe 146-300
+RJ70,bae146,Avro RJ70
+RJ85,bae146,Avro RJ85
+RJ1H,bae146,Avro RJ100
+C919,comac,COMAC C919
+AJ27,comac,COMAC ARJ21
+SU95,superjet,Sukhoi Superjet 100
+# Heavy / special transport
+IL76,il76,Ilyushin Il-76
+IL62,kc135,Ilyushin Il-62,80
+IL96,a340,Ilyushin Il-96,80
+A124,an124,Antonov An-124 Ruslan
+A225,an225,Antonov An-225 Mriya
+AN12,mil_twinprop,Antonov An-12,75
+SGUP,superguppy,Super Guppy
+CONC,concorde,Concorde
+# Business jets
+C25A,lightjet,Cessna Citation CJ2
+C25B,lightjet,Cessna Citation CJ3
+C25C,lightjet,Cessna Citation CJ4
+C25M,lightjet,Cessna Citation M2
+C500,lightjet,Cessna Citation I
+C510,lightjet,Cessna Citation Mustang
+C525,lightjet,Cessna CitationJet
+C550,lightjet,Cessna Citation II
+C560,lightjet,Cessna Citation V
+C56X,lightjet,Cessna Citation Excel
+C650,lightjet,Cessna Citation III
+C680,bizjet,Cessna Citation Sovereign
+C68A,bizjet,Cessna Citation Latitude
+C700,bizjet,Cessna Citation Longitude
+C750,bizjet,Cessna Citation X
+E50P,lightjet,Embraer Phenom 100
+E55P,lightjet,Embraer Phenom 300
+E545,bizjet,Embraer Legacy 450
+E550,bizjet,Embraer Praetor 600
+LJ35,lightjet,Learjet 35
+LJ45,lightjet,Learjet 45
+LJ60,lightjet,Learjet 60
+LJ75,lightjet,Learjet 75
+PC24,lightjet,Pilatus PC-24
+HDJT,lightjet,Honda HondaJet
+PRM1,lightjet,Beechcraft Premier I
+SF50,lightjet,Cirrus Vision Jet
+EA50,lightjet,Eclipse 500
+BE40,lightjet,Beechcraft Beechjet 400
+H25B,bizjet,Hawker 800
+CL30,bizjet,Bombardier Challenger 300
+CL35,bizjet,Bombardier Challenger 350
+CL60,bizjet,Bombardier Challenger 600
+GL5T,bizjet,Bombardier Global 5000
+GLEX,bizjet,Bombardier Global Express
+GL7T,bizjet,Bombardier Global 7500
+G150,bizjet,Gulfstream G150
+G280,bizjet,Gulfstream G280
+GLF4,bizjet,Gulfstream IV
+GLF5,bizjet,Gulfstream V
+GLF6,bizjet,Gulfstream G650
+GA5C,bizjet,Gulfstream G500
+GA6C,bizjet,Gulfstream G600
+GA7C,bizjet,Gulfstream G700
+F2TH,bizjet,Dassault Falcon 2000
+F900,bizjet,Dassault Falcon 900
+FA50,bizjet,Dassault Falcon 50
+FA7X,bizjet,Dassault Falcon 7X
+FA8X,bizjet,Dassault Falcon 8X
+FA6X,bizjet,Dassault Falcon 6X
+FA10,lightjet,Dassault Falcon 10
+FA20,lightjet,Dassault Falcon 20
+# Light aircraft
+C150,single_high,Cessna 150
+C152,single_high,Cessna 152
+C162,single_high,Cessna Skycatcher
+C170,single_high,Cessna 170
+C172,single_high,Cessna 172
+C177,single_high,Cessna Cardinal
+C180,single_high,Cessna 180
+C182,single_high,Cessna 182
+C185,single_high,Cessna 185
+C206,single_high,Cessna 206
+C210,single_high,Cessna 210
+P210,single_high,Cessna P210
+PA18,single_high,Piper Super Cub
+J3,single_high,Piper J-3 Cub
+CH60,single_high,Zenith CH 601
+SHRK,single_low,Shark
+P28A,single_low,Piper PA-28 Cherokee
+P28B,single_low,Piper PA-28 Cherokee
+P28R,single_low,Piper Arrow
+PA24,single_low,Piper Comanche
+PA32,single_low,Piper Saratoga
+PA46,single_low,Piper Malibu
+SR20,single_low,Cirrus SR20
+SR22,single_low,Cirrus SR22
+S22T,single_low,Cirrus SR22T
+DA40,single_low,Diamond DA40
+DA20,single_low,Diamond DA20
+M20P,single_low,Mooney M20
+M20T,single_low,Mooney M20
+BE33,single_low,Beechcraft Bonanza
+BE35,single_low,Beechcraft Bonanza
+BE36,single_low,Beechcraft Bonanza
+TB20,single_low,Socata TB-20 Trinidad
+TB10,single_low,Socata TB-10 Tobago
+TB9,single_low,Socata TB-9 Tampico
+DR40,single_low,Robin DR400
+DR10,single_low,Robin DR100
+R200,single_low,Robin HR200
+CAP1,single_low,Mudry CAP 10
+EXTR,single_low,Extra 300,30
+RV7,single_low,Van's RV-7
+RV8,single_low,Van's RV-8
+PA34,twin_piston,Piper Seneca
+PA44,twin_piston,Piper Seminole
+PA31,twin_piston,Piper Navajo
+BE55,twin_piston,Beechcraft Baron
+BE58,twin_piston,Beechcraft Baron
+DA42,twin_piston,Diamond DA42
+DA62,twin_piston,Diamond DA62
+P68,twin_piston,Vulcanair P68
+C310,twin_piston,Cessna 310
+C340,twin_piston,Cessna 340
+C414,twin_piston,Cessna 414
+C421,twin_piston,Cessna 421
+# Turboprops
+PC12,turboprop_single,Pilatus PC-12
+PC6T,turboprop_single,Pilatus PC-6 Porter
+C208,turboprop_single,Cessna Caravan
+TBM7,turboprop_single,Daher TBM 700
+TBM8,turboprop_single,Daher TBM 850
+TBM9,turboprop_single,Daher TBM 900
+KODI,turboprop_single,Daher Kodiak
+P46T,turboprop_single,Piper M500
+BE20,twin_turboprop,Beechcraft King Air 200
+BE30,twin_turboprop,Beechcraft King Air 300
+B350,twin_turboprop,Beechcraft King Air 350
+BE9L,twin_turboprop,Beechcraft King Air 90
+C441,twin_turboprop,Cessna Conquest
+PAY2,twin_turboprop,Piper Cheyenne
+P180,twin_turboprop,Piaggio Avanti,20
+DHC6,twin_turboprop,DHC-6 Twin Otter
+D228,twin_turboprop,Dornier 228
+L410,twin_turboprop,Let L-410
+SW4,twin_turboprop,Fairchild Metro
+B190,twin_turboprop,Beechcraft 1900
+J32,twin_turboprop,BAe Jetstream 32
+J41,twin_turboprop,BAe Jetstream 41
+# Helicopters
+EC20,helicopter,Airbus H120
+EC30,helicopter,Airbus H130
+EC35,helicopter,Airbus H135
+EC45,helicopter,Airbus H145
+EC55,helicopter,Airbus H155
+EC75,helicopter,Airbus H175
+EC25,helicopter,Airbus H225
+H160,helicopter,Airbus H160
+AS50,helicopter,Airbus AS350 Ecureuil
+AS55,helicopter,Airbus AS355 Ecureuil 2
+AS65,helicopter,Airbus AS365 Dauphin
+AS32,helicopter,Airbus Super Puma
+AS3B,helicopter,Airbus Super Puma
+A109,helicopter,Leonardo AW109
+A119,helicopter,Leonardo AW119
+A139,helicopter,Leonardo AW139
+A169,helicopter,Leonardo AW169
+A189,helicopter,Leonardo AW189
+EH10,helicopter,Leonardo AW101,60
+B06,helicopter,Bell 206
+B407,helicopter,Bell 407
+B429,helicopter,Bell 429
+B412,helicopter,Bell 412
+R22,helicopter,Robinson R22
+R44,helicopter,Robinson R44
+R66,helicopter,Robinson R66
+S76,helicopter,Sikorsky S-76
+S92,helicopter,Sikorsky S-92
+BK17,helicopter,MBB/Kawasaki BK 117
+NH90,helicopter,NH Industries NH90,65
+TIGR,helicopter,Airbus Tiger,75
+H60,helicopter,Sikorsky H-60 Black Hawk,65
+UH1,helicopter,Bell UH-1 Huey,55
+MI8,helicopter,Mil Mi-8,60
+H64,helicopter,Boeing AH-64 Apache,75
+H47,chinook,Boeing CH-47 Chinook
+H53,helicopter,Sikorsky CH-53,75
+GAZL,helicopter,Aerospatiale Gazelle,40
+ALO3,helicopter,Aerospatiale Alouette III,40
+# Gliders, balloons, drones
+GLID,glider,Glider
+BALL,balloon,Hot-air balloon
+GLHK,uav,Northrop RQ-4 Global Hawk
+Q4,uav,Northrop RQ-4 Global Hawk
+Q9,uav,General Atomics MQ-9 Reaper
+MQ9,uav,General Atomics MQ-9 Reaper
+HRON,uav,IAI Heron
+# Military jets
+F16,fighter,General Dynamics F-16
+F15,fighter,Boeing F-15 Eagle
+F18,fighter,Boeing F/A-18 Hornet
+F18S,fighter,Boeing F/A-18 Super Hornet
+F35,fighter,Lockheed F-35 Lightning II
+F22,fighter,Lockheed F-22 Raptor,95
+EUFI,fighter,Eurofighter Typhoon
+RFAL,fighter,Dassault Rafale
+MIR2,fighter,Dassault Mirage 2000
+MIRA,fighter,Dassault Mirage
+GRIF,fighter,Saab Gripen
+TOR,fighter,Panavia Tornado
+F5,fighter,Northrop F-5
+F4,fighter,McDonnell F-4 Phantom,85
+SU27,fighter,Sukhoi Su-27
+SU30,fighter,Sukhoi Su-30
+MG29,fighter,Mikoyan MiG-29
+A10,fighter,Fairchild A-10 Thunderbolt,85
+HAWK,jet_trainer,BAe Hawk
+AJET,jet_trainer,Dassault/Dornier Alpha Jet
+M346,jet_trainer,Leonardo M-346
+T38,jet_trainer,Northrop T-38 Talon
+L39,jet_trainer,Aero L-39 Albatros
+L159,jet_trainer,Aero L-159
+MB39,jet_trainer,Aermacchi MB-339
+PC21,prop_trainer,Pilatus PC-21
+PC9,prop_trainer,Pilatus PC-9
+PC7,prop_trainer,Pilatus PC-7
+TEX2,prop_trainer,Beechcraft T-6 Texan II
+TUCA,prop_trainer,Embraer Tucano
+G120,prop_trainer,Grob G 120
+# Military transport & special
+A400,a400m,Airbus A400M Atlas
+C130,c130,Lockheed C-130 Hercules
+C30J,c130,Lockheed C-130J Super Hercules
+C17,c17,Boeing C-17 Globemaster III
+C5,c5,Lockheed C-5 Galaxy
+C5M,c5,Lockheed C-5M Super Galaxy
+C160,mil_twinprop,Transall C-160
+C295,mil_twinprop,Airbus C295
+CN35,mil_twinprop,Airbus CN235
+C27J,mil_twinprop,Leonardo C-27J Spartan
+KC2,mil_twinprop,Embraer C-390,70
+E390,mil_twinprop,Embraer C-390,70
+E2,awacs,Northrop E-2 Hawkeye
+B52,b52,Boeing B-52 Stratofortress
+B1,b1,Rockwell B-1B Lancer
+B2,b2,Northrop B-2 Spirit
+V22,v22,Bell-Boeing V-22 Osprey
+U2,glider,Lockheed U-2 Dragon Lady,95
+MRTT,a330,Airbus A330 MRTT,65

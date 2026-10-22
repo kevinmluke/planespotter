@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>PlaneSpotter quick start</title>
+<style>
+/* Printed card: A6 landscape (148 x 105 mm), front in English, back in French. */
+@page { size: 148mm 105mm; margin: 0; }
+:root { --ink: #111; --mut: #555; --line: #bbb; --paper: #fff; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #ddd; }
+body { font: 8.4pt/1.35 -apple-system, "Helvetica Neue", Arial, sans-serif; color: var(--ink); }
+.card { width: 148mm; height: 105mm; background: var(--paper); margin: 10mm auto; padding: 7mm 8mm 6mm;
+        display: grid; grid-template-columns: 1fr 52mm; grid-template-rows: auto 1fr auto; gap: 3mm 6mm;
+        overflow: hidden; page-break-after: always; break-after: page; }
+@media print { html, body { background: none; } .card { margin: 0; } }
+header { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between;
+         border-bottom: 1.4pt solid var(--ink); padding-bottom: 1.6mm; }
+h1 { font-size: 15pt; margin: 0; letter-spacing: -.01em; }
+header span { font-size: 8pt; color: var(--mut); }
+h2 { font-size: 7pt; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 1.4mm; color: var(--mut); }
+ol.steps { list-style: none; padding: 0; margin: 0 0 3mm; counter-reset: s; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 5.4mm 1fr; gap: 2mm; margin-bottom: 1.6mm; }
+ol.steps li::before { content: counter(s); width: 5.4mm; height: 5.4mm; border-radius: 50%; background: var(--ink); color: var(--paper);
+                      display: grid; place-items: center; font-weight: 700; font-size: 7.5pt; }
+ol.steps b { display: block; }
+table.btn { border-collapse: collapse; width: 100%; }
+table.btn td { padding: .9mm 0; border-top: .5pt solid var(--line); vertical-align: top; }
+table.btn td:first-child { width: 17mm; font-weight: 700; white-space: nowrap; }
+.side img { width: 100%; display: block; border: .6pt solid var(--ink); border-radius: 1mm; }
+.side p { margin: .8mm 0 2.6mm; font-size: 7pt; color: var(--mut); }
+.legend { margin: 0; padding: 0; list-style: none; font-size: 7.4pt; }
+.legend li { margin-bottom: .9mm; }
+.badge { display: inline-block; font-weight: 700; font-size: 6.4pt; padding: .2mm 1.2mm; border-radius: .8mm; border: .7pt solid var(--ink); }
+.badge.fill { background: var(--ink); color: var(--paper); }
+footer { grid-column: 1 / -1; font-size: 6.4pt; color: var(--mut); border-top: .5pt solid var(--line); padding-top: 1.2mm; }
+</style></head>
+<body>
+
+<!-- ============================ ENGLISH ============================ -->
+<section class="card" lang="en">
+  <header><h1>PlaneSpotter</h1><span>The aircraft over your head, live.</span></header>
+  <div>
+    <h2>Set up in 2 minutes</h2>
+    <ol class="steps">
+      <li><span><b>Plug in the USB-C cable.</b>Any phone charger works.</span></li>
+      <li><span><b>Scan the code on the screen</b>with your phone's camera.</span></li>
+      <li><span><b>Pick your Wi-Fi and type your town.</b>Press Save. That's it.</span></li>
+    </ol>
+    <h2>The button</h2>
+    <table class="btn">
+      <tr><td>Press</td><td>Switch between Aircraft, ISS and Auto</td></tr>
+      <tr><td>Hold 3 s</td><td>Settings: Wi-Fi, town, units, dark theme…</td></tr>
+      <tr><td>Hold 10 s</td><td>Erase everything and start again</td></tr>
+    </table>
+  </div>
+  <div class="side">
+    <img src="../previews/01_aircraft_en.png" alt="">
+    <p>The closest aircraft, its route and a radar of everything around you.</p>
+    <ul class="legend">
+      <li><span class="badge fill">● LIVE</span> data is current</li>
+      <li><span class="badge">DELAYED</span> a few seconds behind</li>
+      <li><b>OFFLINE</b> screen: nothing shown is live; it says why</li>
+      <li><b>★</b> rare aircraft and emergencies take over the screen</li>
+      <li><b>ISS</b> 10 min before it's visible: where to look</li>
+    </ul>
+  </div>
+  <footer>Wi-Fi: 2.4 GHz only. Work networks with a username work; guest Wi-Fi with a sign-in page doesn't.
+    Updates install by themselves. Data: adsb.lol, adsbdb.com, CelesTrak, GeoNames.</footer>
+</section>
+
+<!-- ============================ FRANÇAIS ============================ -->
+<section class="card" lang="fr">
+  <header><h1>PlaneSpotter</h1><span>Les avions au-dessus de vous, en direct.</span></header>
+  <div>
+    <h2>Prêt en 2 minutes</h2>
+    <ol class="steps">
+      <li><span><b>Branchez le câble USB-C.</b>N'importe quel chargeur de téléphone convient.</span></li>
+      <li><span><b>Scannez le code affiché</b>avec l'appareil photo de votre téléphone.</span></li>
+      <li><span><b>Choisissez votre Wi-Fi et tapez votre ville.</b>Appuyez sur Enregistrer. C'est tout.</span></li>
+    </ol>
+    <h2>Le bouton</h2>
+    <table class="btn">
+      <tr><td>Appui</td><td>Alterner entre Avions, ISS et Auto</td></tr>
+      <tr><td>3 s</td><td>Réglages : Wi-Fi, ville, unités, thème sombre…</td></tr>
+      <tr><td>10 s</td><td>Tout effacer et recommencer</td></tr>
+    </table>
+  </div>
+  <div class="side">
+    <img src="../previews/01_aircraft_fr.png" alt="">
+    <p>L'avion le plus proche, son trajet et un radar de tout ce qui vole autour.</p>
+    <ul class="legend">
+      <li><span class="badge fill">● EN DIRECT</span> données à jour</li>
+      <li><span class="badge">RETARD</span> quelques secondes de décalage</li>
+      <li>Écran <b>HORS LIGNE</b> : rien n'est en direct ; la cause est indiquée</li>
+      <li><b>★</b> avions rares et urgences prennent tout l'écran</li>
+      <li><b>ISS</b> 10 min avant un passage visible : où regarder</li>
+    </ul>
+  </div>
+  <footer>Wi-Fi 2,4 GHz uniquement. Les réseaux d'entreprise avec identifiant fonctionnent ; les Wi-Fi invités avec page de
+    connexion, non. Mises à jour automatiques. Données : adsb.lol, adsbdb.com, CelesTrak, GeoNames.</footer>
+</section>
+
+</body></html>

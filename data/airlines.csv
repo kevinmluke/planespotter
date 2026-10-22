@@ -1,0 +1,156 @@
+# ICAO callsign prefix,airline name (fallback when the route service has no entry)
+AFR,Air France
+HOP,Air France Hop
+TVF,Transavia France
+TRA,Transavia
+EZY,easyJet
+EJU,easyJet Europe
+EZS,easyJet Switzerland
+RYR,Ryanair
+RUK,Ryanair UK
+MAY,Malta Air
+BAW,British Airways
+SHT,British Airways
+CFE,BA CityFlyer
+VIR,Virgin Atlantic
+DLH,Lufthansa
+CLH,Lufthansa CityLine
+EWG,Eurowings
+GWI,Germanwings
+CFG,Condor
+TUI,TUI fly
+TOM,TUI Airways
+KLM,KLM
+KLC,KLM Cityhopper
+SWR,Swiss
+EDW,Edelweiss
+AUA,Austrian
+BEL,Brussels Airlines
+IBE,Iberia
+IBS,Iberia Express
+ANE,Air Nostrum
+VLG,Vueling
+AEA,Air Europa
+VOE,Volotea
+TAP,TAP Air Portugal
+ITY,ITA Airways
+SAS,SAS
+NAX,Norwegian
+NSZ,Norwegian
+FIN,Finnair
+ICE,Icelandair
+AEE,Aegean
+LOT,LOT Polish Airlines
+CSA,Czech Airlines
+WZZ,Wizz Air
+WMT,Wizz Air Malta
+WUK,Wizz Air UK
+TAR,Tunisair
+RAM,Royal Air Maroc
+DAH,Air Algerie
+THY,Turkish Airlines
+PGT,Pegasus
+SXS,SunExpress
+ELY,El Al
+UAE,Emirates
+ETD,Etihad
+QTR,Qatar Airways
+SVA,Saudia
+GFA,Gulf Air
+OMA,Oman Air
+MSR,EgyptAir
+ETH,Ethiopian
+KQA,Kenya Airways
+SAA,South African
+AFL,Aeroflot
+AIC,Air India
+CCA,Air China
+CES,China Eastern
+CSN,China Southern
+CPA,Cathay Pacific
+SIA,Singapore Airlines
+JAL,Japan Airlines
+ANA,All Nippon Airways
+KAL,Korean Air
+AAR,Asiana
+THA,Thai Airways
+QFA,Qantas
+ANZ,Air New Zealand
+AAL,American Airlines
+DAL,Delta
+UAL,United
+SWA,Southwest
+JBU,JetBlue
+ASA,Alaska Airlines
+NKS,Spirit
+FFT,Frontier
+SKW,SkyWest
+RPA,Republic Airways
+ENY,Envoy
+EDV,Endeavor Air
+ACA,Air Canada
+JZA,Jazz
+ROU,Air Canada Rouge
+WJA,WestJet
+TSC,Air Transat
+POE,Porter
+AMX,Aeromexico
+VOI,Volaris
+AVA,Avianca
+LAN,LATAM
+TAM,LATAM Brasil
+GLO,Gol
+AZU,Azul
+CMP,Copa
+BTI,airBaltic
+EIN,Aer Lingus
+EAI,Emerald Airlines
+LOG,Loganair
+EXS,Jet2
+AUR,Aurigny
+CRL,Corsair
+FBU,French bee
+AAF,Aigle Azur
+ASL,ASL Airlines
+TVS,Smartwings
+LGL,Luxair
+CTN,Croatia Airlines
+ROT,TAROM
+BUL,Bulgaria Air
+FDX,FedEx
+UPS,UPS
+GTI,Atlas Air
+CLX,Cargolux
+BOX,AeroLogic
+DHK,DHL
+BCS,DHL (EAT Leipzig)
+DHX,DHL
+ABW,AirBridgeCargo
+CKS,Kalitta Air
+SWT,Swiftair
+NPT,West Atlantic
+SAF,Safran
+NJE,NetJets
+NJU,NetJets
+VJT,VistaJet
+GAC,GlobeAir
+LXJ,Flexjet
+SAM,Samu
+FRS,Gendarmerie
+SAGA,Securite Civile
+RCH,US Air Force (Reach)
+CTM,French Air Force (Cotam)
+FAF,French Air Force
+FNY,French Navy
+GAF,German Air Force
+RRR,Royal Air Force
+ASCOT,Royal Air Force
+BAF,Belgian Air Force
+NAF,Netherlands Air Force
+IAM,Italian Air Force
+AME,Spanish Air Force
+SUI,Swiss Air Force
+NATO,NATO
+CNV,US Navy
+PAT,US Army
+CFC,Canadian Forces
