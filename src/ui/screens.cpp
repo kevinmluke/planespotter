@@ -884,16 +884,15 @@ void drawSetup(Canvas& cv, const SetupScreen& s) {
   beginFrame(cv, s.c);
   drawQr(cv, 12, 12, 248, s.qrPayload);
   const int x = 282, w = kW - x - 10;
-  // First-time setup: the language isn't chosen yet, so say everything in both.
-  const bool both = !s.settingsMode;
-  const Lang L = both ? Lang::EN : s.c.lang;
+  // First-time setup uses the default language (English); French can be picked on the phone.
+  const Lang L = s.c.lang;
   const uint8_t* const msgFonts[] = {F_MED_B, F_BODY_B, F_SMALL};
 
   if (s.settingsMode) {
     drawText(cv, F_BIG, x, 44, tr(L, S::SettingsTitle));
   } else {
     drawText(cv, F_BIG, x, 44, "PlaneSpotter");
-    drawText(cv, F_LABEL, x + 2, 66, "SETUP  ·  CONFIGURATION");
+    drawText(cv, F_LABEL, x + 2, 66, tr(L, S::SetupTitle));
   }
 
   int y = 106;
@@ -901,36 +900,17 @@ void drawSetup(Canvas& cv, const SetupScreen& s) {
   if (joinMessage(L, s.join, s.joinSsid, line, sizeof(line))) {
     // Result banner: inverted for problems, outlined while connecting or on success.
     const bool problem = s.join != JoinResult::Connecting && s.join != JoinResult::Ok;
-    const int bh = both ? 56 : 34;
+    const int bh = 34;
     if (problem) cv.g.fillRoundRect(x - 6, y - 26, w + 6, bh, 6, gInk);
     else cv.g.drawRoundRect(x - 6, y - 26, w + 6, bh, 6, gInk);
-    const uint16_t c = problem ? gPaper : gInk;
-    drawFit(cv, msgFonts, 3, x + 4, y, w - 14, line, Align::Left, c);
-    if (both && joinMessage(Lang::FR, s.join, s.joinSsid, line, sizeof(line))) {
-      const uint8_t* const frFonts[] = {F_BODY, F_SMALL};
-      drawFit(cv, frFonts, 2, x + 4, y + 22, w - 14, line, Align::Left, c);
-    }
+    drawFit(cv, msgFonts, 3, x + 4, y, w - 14, line, Align::Left, problem ? gPaper : gInk);
     y += bh + 8;
     if (s.join == JoinResult::Connecting || s.join == JoinResult::Ok) return;  // keep the screen calm
-    if (both) {
-      // Not enough room for the full instructions in two languages under the banner.
-      drawText(cv, F_BODY_B, x, y + 22, tr(Lang::EN, S::ScanWithCamera));
-      drawText(cv, F_BODY, x, y + 46, tr(Lang::FR, S::ScanWithCamera));
-      std::snprintf(line, sizeof(line), tr(L, S::NoCamera), s.apSsid, s.apPassword);
-      const uint8_t* const footFonts[] = {F_SMALL, F_TINY};
-      drawFit(cv, footFonts, 2, x, 262, w, line);
-      return;
-    }
   }
 
   drawText(cv, F_MED_B, x, y + 18, tr(L, S::ScanWithCamera));
   drawText(cv, F_BODY, x, y + 42, tr(L, s.settingsMode ? S::SettingsThen : S::SetupThen));
-  if (both) {
-    drawText(cv, F_MED_B, x, y + 80, tr(Lang::FR, S::ScanWithCamera));
-    drawText(cv, F_BODY, x, y + 104, tr(Lang::FR, S::SetupThen));
-  } else {
-    drawText(cv, F_BODY, x, y + 80, tr(L, S::CloseHint));
-  }
+  if (s.settingsMode) drawText(cv, F_BODY, x, y + 80, tr(L, S::CloseHint));
   std::snprintf(line, sizeof(line), tr(L, S::NoCamera), s.apSsid, s.apPassword);
   const uint8_t* const footFonts[] = {F_SMALL, F_TINY};
   drawFit(cv, footFonts, 2, x, 262, w, line);

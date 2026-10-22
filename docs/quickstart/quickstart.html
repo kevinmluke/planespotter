@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <title>PlaneSpotter quick start</title>
 <style>
-/* Printed card: A6 landscape (148 x 105 mm), front in English, back in French. */
+/* Printed card: A6 landscape (148 x 105 mm), single-sided. */
 @page { size: 148mm 105mm; margin: 0; }
 :root { --ink: #111; --mut: #555; --line: #bbb; --paper: #fff; }
 * { box-sizing: border-box; }
@@ -10,7 +10,7 @@ html, body { margin: 0; background: #ddd; }
 body { font: 8.4pt/1.35 -apple-system, "Helvetica Neue", Arial, sans-serif; color: var(--ink); }
 .card { width: 148mm; height: 105mm; background: var(--paper); margin: 10mm auto; padding: 7mm 8mm 6mm;
         display: grid; grid-template-columns: 1fr 52mm; grid-template-rows: auto 1fr auto; gap: 3mm 6mm;
-        overflow: hidden; page-break-after: always; break-after: page; }
+        overflow: hidden; }
 @media print { html, body { background: none; } .card { margin: 0; } }
 header { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between;
          border-bottom: 1.4pt solid var(--ink); padding-bottom: 1.6mm; }
@@ -35,7 +35,6 @@ footer { grid-column: 1 / -1; font-size: 6.4pt; color: var(--mut); border-top: .
 </style></head>
 <body>
 
-<!-- ============================ ENGLISH ============================ -->
 <section class="card" lang="en">
   <header><h1>PlaneSpotter</h1><span>The aircraft over your head, live.</span></header>
   <div>
@@ -65,38 +64,6 @@ footer { grid-column: 1 / -1; font-size: 6.4pt; color: var(--mut); border-top: .
   </div>
   <footer>Wi-Fi: 2.4 GHz only. Work networks with a username work; guest Wi-Fi with a sign-in page doesn't.
     Updates install by themselves. Data: adsb.lol, adsbdb.com, CelesTrak, GeoNames.</footer>
-</section>
-
-<!-- ============================ FRANÇAIS ============================ -->
-<section class="card" lang="fr">
-  <header><h1>PlaneSpotter</h1><span>Les avions au-dessus de vous, en direct.</span></header>
-  <div>
-    <h2>Prêt en 2 minutes</h2>
-    <ol class="steps">
-      <li><span><b>Branchez le câble USB-C.</b>N'importe quel chargeur de téléphone convient.</span></li>
-      <li><span><b>Scannez le code affiché</b>avec l'appareil photo de votre téléphone.</span></li>
-      <li><span><b>Choisissez votre Wi-Fi et tapez votre ville.</b>Appuyez sur Enregistrer. C'est tout.</span></li>
-    </ol>
-    <h2>Le bouton</h2>
-    <table class="btn">
-      <tr><td>Appui</td><td>Alterner entre Avions, ISS et Auto</td></tr>
-      <tr><td>3 s</td><td>Réglages : Wi-Fi, ville, unités, thème sombre…</td></tr>
-      <tr><td>10 s</td><td>Tout effacer et recommencer</td></tr>
-    </table>
-  </div>
-  <div class="side">
-    <img src="../previews/01_aircraft_fr.png" alt="">
-    <p>L'avion le plus proche, son trajet et un radar de tout ce qui vole autour.</p>
-    <ul class="legend">
-      <li><span class="badge fill">● EN DIRECT</span> données à jour</li>
-      <li><span class="badge">RETARD</span> quelques secondes de décalage</li>
-      <li>Écran <b>HORS LIGNE</b> : rien n'est en direct ; la cause est indiquée</li>
-      <li><b>★</b> avions rares et urgences prennent tout l'écran</li>
-      <li><b>ISS</b> 10 min avant un passage visible : où regarder</li>
-    </ul>
-  </div>
-  <footer>Wi-Fi 2,4 GHz uniquement. Les réseaux d'entreprise avec identifiant fonctionnent ; les Wi-Fi invités avec page de
-    connexion, non. Mises à jour automatiques. Données : adsb.lol, adsbdb.com, CelesTrak, GeoNames.</footer>
 </section>
 
 </body></html>
