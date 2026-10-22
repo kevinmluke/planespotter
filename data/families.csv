@@ -1,0 +1,64 @@
+# key,display name,military (0/1),rarity score 0-100 (>= threshold takes over the screen)
+generic_jet,Jet,0,0
+a220,Airbus A220,0,0
+a320,Airbus A320 family,0,0
+a300,Airbus A300 / A310,0,25
+a330,Airbus A330,0,0
+a340,Airbus A340,0,30
+a350,Airbus A350,0,0
+a380,Airbus A380,0,60
+beluga,Airbus Beluga,0,90
+belugaxl,Airbus BelugaXL,0,85
+b717,Boeing 717,0,15
+b727,Boeing 727,0,60
+b737,Boeing 737,0,0
+b737max,Boeing 737 MAX,0,0
+b747,Boeing 747,0,45
+dreamlifter,Boeing 747 Dreamlifter,0,85
+b757,Boeing 757,0,10
+b767,Boeing 767,0,0
+b777,Boeing 777,0,0
+b787,Boeing 787,0,0
+md80,McDonnell Douglas MD-80,0,30
+dc10,DC-10 / MD-11,0,50
+ejet,Embraer E-Jet,0,0
+erj,Embraer ERJ,0,0
+crj,Bombardier CRJ,0,0
+atr,ATR 42 / 72,0,0
+dash8,De Havilland Dash 8,0,0
+saab,Saab 340 / 2000,0,10
+f100,Fokker 70 / 100,0,25
+bae146,BAe 146 / Avro RJ,0,35
+comac,COMAC,0,70
+superjet,Sukhoi Superjet,0,40
+il76,Ilyushin Il-76,0,60
+an124,Antonov An-124,0,80
+an225,Antonov An-225,0,100
+superguppy,Aero Spacelines Super Guppy,0,95
+concorde,Concorde,0,100
+lightjet,Light business jet,0,0
+bizjet,Business jet,0,0
+single_high,Light aircraft (high wing),0,0
+single_low,Light aircraft (low wing),0,0
+twin_piston,Twin piston,0,0
+turboprop_single,Single turboprop,0,0
+twin_turboprop,Twin turboprop,0,0
+helicopter,Helicopter,0,0
+chinook,Boeing CH-47 Chinook,1,75
+glider,Glider,0,0
+balloon,Balloon,0,30
+uav,Drone,1,80
+fighter,Fighter jet,1,75
+jet_trainer,Jet trainer,1,60
+prop_trainer,Turboprop trainer,1,40
+a400m,Airbus A400M,1,65
+c130,Lockheed C-130 Hercules,1,65
+c17,Boeing C-17 Globemaster,1,70
+c5,Lockheed C-5 Galaxy,1,85
+kc135,Boeing 707 / KC-135,1,70
+awacs,AWACS radar aircraft,1,85
+mil_twinprop,Military transport,1,60
+b52,Boeing B-52,1,90
+b1,Rockwell B-1 Lancer,1,90
+b2,Northrop B-2 Spirit,1,100
+v22,Bell-Boeing V-22 Osprey,1,80

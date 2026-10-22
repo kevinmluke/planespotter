@@ -1,0 +1,9 @@
+.pio/
+.venv/
+keys/
+*.pem
+build/
+test/host/build/
+__pycache__/
+tools/cache/
+.claude/
