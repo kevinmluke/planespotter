@@ -29,8 +29,8 @@ and a 5.79" black-and-white e-paper panel (792 × 272).
 |---|---|
 | ![aircraft](docs/previews/01_aircraft_en.png) | ![rare](docs/previews/02_rare_en.png) |
 | ![iss](docs/previews/05_iss_map_en.png) | ![alert](docs/previews/06_iss_alert_en.png) |
-| ![setup](docs/previews/08_setup.png) | ![offline](docs/previews/10_offline_fr.png) |
-| ![dark aircraft](docs/previews/01_aircraft_en_dark.png) | ![dark iss](docs/previews/05_iss_map_fr_dark.png) |
+| ![setup](docs/previews/08_setup.png) | ![offline](docs/previews/10_offline_en.png) |
+| ![dark aircraft](docs/previews/01_aircraft_en_dark.png) | ![dark iss](docs/previews/05_iss_map_en_dark.png) |
 
 These previews are rendered by the firmware's own drawing code (see
 [Development](#development)). All silhouettes are in
