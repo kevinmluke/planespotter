@@ -5,6 +5,8 @@ Source: GeoNames cities15000 (CC BY 4.0, https://www.geonames.org), every place
 with more than 15,000 inhabitants, plus each city's time zone converted to a
 POSIX TZ string (from the IANA tz database via the `tzdata` package).
 
+Extra towns below that size can be listed in data/extra_towns.csv.
+
 Output: src/generated/cities.cpp, a gzip'd text file served to the phone as-is:
 
   line 1:  TZ<TAB>posix0<TAB>posix1...
@@ -62,6 +64,22 @@ def build():
             tzs.append(rule)
         region = admin1.get(f"{cc}.{a1}", "")
         rows.append((pop, f"{name}\t{region}\t{cc}\t{lat:.2f}\t{lon:.2f}\t{tz_index[rule]}"))
+    # Hand-picked extra towns (data/extra_towns.csv), skipping any already listed
+    known = {(r[1].split("\t")[0], r[1].split("\t")[1], r[1].split("\t")[2]) for r in rows}
+    with open(os.path.join(ROOT, "data", "extra_towns.csv"), encoding="utf-8") as f:
+        for line in f:
+            if not line.strip() or line.startswith("#"):
+                continue
+            name, region, cc, lat, lon, zone, pop = [x.strip() for x in line.split(",")]
+            if (name, region, cc) in known:
+                continue
+            rule = posix_tz(zone)
+            if not rule:
+                raise SystemExit(f"extra_towns.csv: unknown time zone {zone} for {name}")
+            if rule not in tz_index:
+                tz_index[rule] = len(tzs)
+                tzs.append(rule)
+            rows.append((int(pop or 0), f"{name}\t{region}\t{cc}\t{float(lat):.2f}\t{float(lon):.2f}\t{tz_index[rule]}"))
     rows.sort(key=lambda r: -r[0])
     body = "TZ\t" + "\t".join(tzs) + "\n" + "\n".join(r[1] for r in rows) + "\n"
     blob = gzip.compress(body.encode("utf-8"), compresslevel=9, mtime=0)

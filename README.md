@@ -167,6 +167,11 @@ is older than 14 days, the ISS screen goes offline too.
 - **Silhouettes:** they are parametric drawings in
   [tools/silhouettes.py](tools/silhouettes.py). Tweak them, run
   `gen_assets.py` and check `docs/silhouettes.png`.
+- **Small towns:** the setup page lists every place with more than 15,000
+  people. To add a smaller one, add a line to
+  [data/extra_towns.csv](data/extra_towns.csv) (name, state/region, country
+  code, coordinates, time zone), run `python3 tools/gen_assets.py`, and flash or
+  release.
 - **Timings and endpoints:** see [include/config.h](include/config.h).
 
 ---

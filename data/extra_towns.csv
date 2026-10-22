@@ -1,0 +1,5 @@
+# Towns added to the setup page's town list on top of GeoNames' places with > 15,000 people.
+# name,region,country code,latitude,longitude,IANA time zone,population (for search ordering; 0 if unknown)
+# Coordinates and time zones from GeoNames (https://www.geonames.org).
+Fort Bragg,California,US,39.44572,-123.80529,America/Los_Angeles,7289
+Greenbrae,California,US,37.94854,-122.52470,America/Los_Angeles,0
