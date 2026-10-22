@@ -122,7 +122,7 @@ display's MAC address so IT can register it.
    display restarts on its setup screen.
 4. Unplug it and pack it with a printed quick-start card
    ([docs/quickstart/quickstart.pdf](docs/quickstart/quickstart.pdf): A6,
-   English on the front, French on the back).
+   single-sided).
 
 ---
 

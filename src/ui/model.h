@@ -117,7 +117,7 @@ enum class JoinResult : uint8_t { None, Connecting, Ok, WrongPassword, NotFound,
 // First-time setup and later settings: both run over the display's own Wi-Fi network.
 struct SetupScreen {
   Common c;
-  bool settingsMode = false;   // false: first-time setup (shown in both languages)
+  bool settingsMode = false;   // false: first-time setup
   char apSsid[33] = "";
   char apPassword[17] = "";
   char qrPayload[160] = "";    // WIFI:T:WPA;S:...;P:...;;
