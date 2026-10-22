@@ -98,8 +98,9 @@ cities=[];for(let i=1;i<lines.length;i++){const f=lines[i].split("\t");if(f.leng
 function label(c){return c.n+(c.r&&c.r!=c.n?", "+c.r:"")+", "+c.c}
 let qt;$("#q").addEventListener("focus",loadCities,{once:true});
 $("#q").oninput=()=>{clearTimeout(qt);qt=setTimeout(async()=>{await loadCities();const q=norm($("#q").value.trim());const box=$("#results");box.innerHTML="";
-if(q.length<2){show("#results",false);return}const a=[],b=[];for(const c of cities){if(c.k.startsWith(q))a.push(c);else if(b.length<8&&c.k.includes(" "+q))b.push(c);if(a.length>=8)break}
-const r=a.concat(b).slice(0,8);show("#results",r.length>0);r.forEach(c=>{const d=document.createElement("div");d.innerHTML="<span></span> <small></small>";
+if(q.length<2){show("#results",false);return}const ex=[],a=[],b=[];
+for(const c of cities){if(c.k===q)ex.push(c);else if(a.length<8&&c.k.startsWith(q))a.push(c);else if(b.length<8&&c.k.includes(" "+q))b.push(c)}
+const r=ex.concat(a,b).slice(0,8);show("#results",r.length>0);r.forEach(c=>{const d=document.createElement("div");d.innerHTML="<span></span> <small></small>";
 d.firstChild.textContent=c.n;d.lastChild.textContent=(c.r&&c.r!=c.n?c.r+", ":"")+c.c;d.onclick=()=>chooseTown({lat:c.lat,lon:c.lon,place:c.n,label:label(c),tz:TZ[c.tz]});box.appendChild(d)})},150)};
 function chooseTown(t){sel.town=t;$("#townName").textContent=t.label;show("#townChosen",true);show("#townPick",false)}
 $("#townChange").onclick=()=>{show("#townChosen",false);show("#townPick",true);$("#q").value="";$("#q").focus()};
