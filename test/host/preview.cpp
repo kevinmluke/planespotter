@@ -9,6 +9,7 @@
 
 #include "../../src/core/geo.h"
 #include "../../src/core/iss.h"
+#include "../../src/core/santa.h"
 #include "../../src/generated/aircraft_db.h"
 #include "../../src/ui/screens.h"
 
@@ -241,6 +242,38 @@ int main() {
     es.tzOffsetS = 7200;
     drawEmptySky(cv, es);
     save(canvas, "11_quiet" + sfx);
+
+    // Christmas easter egg: Santa's sleigh as a rare-aircraft takeover
+    {
+      const int64_t dec24 = 1798070400;
+      ac::Aircraft sl;
+      santa::sleigh(santa::midnightOverhead(dec24, -122.56) - 4 * 60, 37.97, -122.56, 80, sl);
+      as = AircraftScreen();
+      setCommon(as.c, lang);
+      std::strcpy(as.c.status.clock, "00:06");
+      std::strcpy(as.ac.flight, sl.callsign);
+      std::strcpy(as.ac.airline, "North Pole Express");
+      std::strcpy(as.ac.model, db::findType(santa::kType)->name);
+      std::strcpy(as.ac.reg, sl.reg);
+      std::strcpy(as.ac.typeCode, sl.type);
+      as.ac.hasRoute = true;
+      std::strcpy(as.ac.originCity, "North Pole");
+      std::strcpy(as.ac.originCode, "NPL");
+      std::strcpy(as.ac.destCity, "Every home");
+      std::strcpy(as.ac.destCode, "XMS");
+      as.ac.routeProgress = 0.5f;
+      as.ac.altFt = sl.altFt;
+      as.ac.vrateFpm = sl.vrateFpm;
+      as.ac.gsKt = sl.gsKt;
+      as.ac.trackDeg = sl.trackDeg;
+      as.ac.distKm = sl.distKm;
+      as.ac.bearingDeg = sl.bearingDeg;
+      as.ac.family = db::familyIndex("sleigh");
+      as.ac.takeover = true;
+      as.ac.reason = ac::RareReason::RareType;
+      drawAircraft(cv, as);
+      save(canvas, "18_santa" + sfx);
+    }
 
     // OTA message
     static MessageScreen ms;

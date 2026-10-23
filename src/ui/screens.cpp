@@ -609,17 +609,19 @@ void drawEmptySky(Canvas& cv, const EmptySkyScreen& s) {
 
 // ---------------------------------------------------------------------------
 
-void drawIssMap(Canvas& cv, const IssMapScreen& s) {
-  beginFrame(cv, s.c);
+namespace {
+
+// World map with day/night shading in the left 544 x 272 pixels.
+void drawWorld(Canvas& cv, float sunLat, float sunLon) {
   const int W = db::kMapW, H = db::kMapH;
   const int rowBytes = W / 8;
 
   // Day/night: precompute per-row and per-column terms of cos(solar zenith).
-  const float sd = std::sin(s.sunLat * kDeg), cd = std::cos(s.sunLat * kDeg);
+  const float sd = std::sin(sunLat * kDeg), cd = std::cos(sunLat * kDeg);
   static float colCos[db::kMapW];
   for (int x = 0; x < W; x++) {
     const float lon = (x + 0.5f) / W * 360.f - 180.f;
-    colCos[x] = std::cos((lon - s.sunLon) * kDeg);
+    colCos[x] = std::cos((lon - sunLon) * kDeg);
   }
   auto land = [&](int x, int y) -> bool {
     if (x < 0) x += W;
@@ -658,6 +660,24 @@ void drawIssMap(Canvas& cv, const IssMapScreen& s) {
   // Equator, dotted
   for (int x = 0; x < W; x += 4) cv.g.drawPixel(x, H / 2, land(x, H / 2) ? gPaper : gInk);
 
+}
+
+float mapX(float lon) { return (lon + 180.f) / 360.f * db::kMapW; }
+float mapY(float lat) { return (90.f - lat) / 180.f * db::kMapH; }
+
+void drawHome(Canvas& cv, float lat, float lon) {
+  const int hx = std::lround(mapX(lon)), hy = std::lround(mapY(lat));
+  cv.g.fillCircle(hx, hy, 6, gPaper);
+  cv.g.fillTriangle(hx, hy - 5, hx - 5, hy, hx + 5, hy, gInk);
+  cv.g.fillRect(hx - 3, hy, 7, 5, gInk);
+}
+
+}  // namespace
+
+void drawIssMap(Canvas& cv, const IssMapScreen& s) {
+  beginFrame(cv, s.c);
+  const int W = db::kMapW, H = db::kMapH;
+  drawWorld(cv, s.sunLat, s.sunLon);
   auto px = [&](float lon) { return (lon + 180.f) / 360.f * W; };
   auto py = [&](float lat) { return (90.f - lat) / 180.f * H; };
 
@@ -673,11 +693,7 @@ void drawIssMap(Canvas& cv, const IssMapScreen& s) {
       else if (i % 2 == 0) cv.g.drawLine(std::lround(x0), std::lround(y0), std::lround(x1), std::lround(y1), gInk);
     }
   }
-  // Home
-  const int hx = std::lround(px(s.homeLon)), hy = std::lround(py(s.homeLat));
-  cv.g.fillCircle(hx, hy, 6, gPaper);
-  cv.g.fillTriangle(hx, hy - 5, hx - 5, hy, hx + 5, hy, gInk);
-  cv.g.fillRect(hx - 3, hy, 7, 5, gInk);
+  drawHome(cv, s.homeLat, s.homeLon);
   // ISS marker: ring + solar-panel glyph
   const int ix = std::lround(px(static_cast<float>(s.pos.lonDeg))), iy = std::lround(py(static_cast<float>(s.pos.latDeg)));
   cv.g.fillCircle(ix, iy, 13, gPaper);

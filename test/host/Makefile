@@ -19,7 +19,8 @@ endif
 CXXFLAGS := -std=c++17 -O2 -Wall -Wextra -Wno-unused-parameter $(STDINC)
 
 CORE := $(ROOT)/src/core/geo.cpp $(ROOT)/src/core/sgp4.cpp $(ROOT)/src/core/iss.cpp \
-        $(ROOT)/src/core/aircraft.cpp $(ROOT)/src/core/text.cpp $(ROOT)/src/core/i18n.cpp
+        $(ROOT)/src/core/aircraft.cpp $(ROOT)/src/core/text.cpp $(ROOT)/src/core/i18n.cpp \
+        $(ROOT)/src/core/santa.cpp
 GEN := $(ROOT)/src/generated/aircraft_db.cpp $(ROOT)/src/generated/silhouettes.cpp $(ROOT)/src/generated/worldmap.cpp
 GFX := $(LIBS)/Adafruit\ GFX\ Library/Adafruit_GFX.cpp $(LIBS)/U8g2_for_Adafruit_GFX/src/U8g2_for_Adafruit_GFX.cpp \
        $(LIBS)/U8g2_for_Adafruit_GFX/src/u8g2_fonts.c $(LIBS)/QRCode/src/qrcode.c
