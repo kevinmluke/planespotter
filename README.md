@@ -63,6 +63,11 @@ These previews are rendered by the firmware's own drawing code (see
 
 To use different pins, change them in [include/config.h](include/config.h).
 
+### Enclosure
+
+A 3D-printable wedge case is in [enclosure/](enclosure/README.md): STL files for
+printing, STEP files for editing, and assembly instructions.
+
 ### Button
 
 | Press | Action |
