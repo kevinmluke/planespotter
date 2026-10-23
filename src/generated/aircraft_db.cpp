@@ -69,6 +69,7 @@ const Family kFamilies[kFamilyCount] = {
     {"b1", "Rockwell B-1 Lancer", true, 90},
     {"b2", "Northrop B-2 Spirit", true, 100},
     {"v22", "Bell-Boeing V-22 Osprey", true, 80},
+    {"sleigh", "Santa's sleigh", false, 100},
 };
 
 const TypeInfo kTypes[] = {
@@ -407,6 +408,7 @@ const TypeInfo kTypes[] = {
     {"SF50", 37, "Cirrus Vision Jet", -1},
     {"SGUP", 35, "Super Guppy", -1},
     {"SHRK", 40, "Shark", -1},
+    {"SLEI", 63, "Santa's sleigh (9 reindeer)", -1},
     {"SR20", 40, "Cirrus SR20", -1},
     {"SR22", 40, "Cirrus SR22", -1},
     {"SU27", 49, "Sukhoi Su-27", -1},
@@ -428,7 +430,7 @@ const TypeInfo kTypes[] = {
     {"UH1", 44, "Bell UH-1 Huey", 55},
     {"V22", 62, "Bell-Boeing V-22 Osprey", -1},
 };
-const int kTypeCount = 355;
+const int kTypeCount = 356;
 
 const Airline kAirlines[] = {
     {"AAF", "Aigle Azur"},
@@ -553,6 +555,7 @@ const Airline kAirlines[] = {
     {"SAF", "Safran"},
     {"SAGA", "Securite Civile"},
     {"SAM", "Samu"},
+    {"SANTA", "North Pole Express"},
     {"SAS", "SAS"},
     {"SHT", "British Airways"},
     {"SIA", "Singapore Airlines"},
@@ -587,7 +590,7 @@ const Airline kAirlines[] = {
     {"WUK", "Wizz Air UK"},
     {"WZZ", "Wizz Air"},
 };
-const int kAirlineCount = 155;
+const int kAirlineCount = 156;
 
 const TypeInfo* findType(const char* code) {
   if (!code || !*code) return nullptr;

@@ -5,7 +5,7 @@
 
 namespace db {
 
-constexpr int kFamilyCount = 63;
+constexpr int kFamilyCount = 64;
 constexpr int kSilSmallW = 232, kSilSmallH = 80;
 constexpr int kSilLargeW = 416, kSilLargeH = 140;
 

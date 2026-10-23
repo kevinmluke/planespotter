@@ -6,6 +6,7 @@
 #include "../../src/core/aircraft.h"
 #include "../../src/core/geo.h"
 #include "../../src/core/i18n.h"
+#include "../../src/core/santa.h"
 #include "../../src/core/text.h"
 #include "../../src/generated/aircraft_db.h"
 
@@ -159,7 +160,7 @@ static void testRarityAndSelection() {
 }
 
 static void testDb() {
-  CHECK(db::kFamilyCount == 63);
+  CHECK(db::kFamilyCount == 64);  // 63 aircraft families + the Christmas sleigh
   const db::TypeInfo* t = db::findType("A388");
   CHECK(t && std::strcmp(db::kFamilies[t->family].key, "a380") == 0);
   CHECK(db::typeRarity(t) == 60);
@@ -180,12 +181,45 @@ static void testDb() {
   }
 }
 
+static void testSanta() {
+  const int64_t dec24 = 1798070400;  // 2026-12-24 00:00 UTC
+  CHECK(santa::yearOf(dec24) == 2026);
+  CHECK(santa::yearOf(dec24 - 86400 * 400) == 2025);
+  // San Anselmo (122.56 W): overhead at solar midnight, 08:10 UTC on the 25th
+  const double lat = 37.97, lon = -122.56;
+  const int64_t mid = santa::midnightOverhead(dec24, lon);
+  CHECK(mid == dec24 + 86400 + 29414);
+  ac::Aircraft a;
+  CHECK(!santa::sleigh(mid - 11 * 60, lat, lon, 80, a));        // not yet
+  CHECK(santa::sleigh(mid - 9 * 60, lat, lon, 80, a));          // coming in from the east
+  CHECK(a.lon > lon && a.distKm > 50 && a.distKm < 80 && a.trackDeg == 270);
+  CHECK(std::strcmp(a.type, santa::kType) == 0 && std::strcmp(a.callsign, "SANTA1") == 0);
+  CHECK(santa::sleigh(mid, lat, lon, 80, a));                   // overhead, low
+  CHECK(a.distKm < 1.0f && a.altFt <= 1500);
+  CHECK(santa::sleigh(mid + 9 * 60, lat, lon, 80, a));          // leaving to the west
+  CHECK(a.lon < lon && a.distKm > 50);
+  CHECK(!santa::sleigh(mid + 11 * 60, lat, lon, 80, a));
+  CHECK(!santa::sleigh(mid - 86400 * 30, lat, lon, 80, a));     // only on Christmas Eve
+  // Santa is the rarest aircraft there is: he takes over the screen
+  const db::TypeInfo* t = db::findType(santa::kType);
+  CHECK(t && db::typeRarity(t) == 100);
+  CHECK(std::strcmp(db::findAirline("SANTA1")->name, "North Pole Express") == 0);
+  santa::sleigh(mid - 5 * 60, lat, lon, 80, a);
+  ac::Aircraft list[2] = {mk("abc123", 3), a};
+  ac::Rarity rar[2] = {ac::scoreRarity(list[0], 0, false), ac::scoreRarity(list[1], db::typeRarity(t), false)};
+  ac::SelectorConfig cfg;
+  ac::Selector sel(cfg);
+  ac::Selection r = sel.select(list, rar, 2, 0);
+  CHECK(r.index == 1 && r.takeover && r.rarity.reason == ac::RareReason::RareType);
+}
+
 int main() {
   testGeo();
   testText();
   testI18n();
   testRarityAndSelection();
   testDb();
+  testSanta();
   std::printf("unit tests: %d checks, %s\n", checks, failures ? "FAILURES" : "OK");
   return failures ? 1 : 0;
 }

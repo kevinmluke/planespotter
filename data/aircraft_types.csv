@@ -366,3 +366,5 @@ B2,b2,Northrop B-2 Spirit
 V22,v22,Bell-Boeing V-22 Osprey
 U2,glider,Lockheed U-2 Dragon Lady,95
 MRTT,a330,Airbus A330 MRTT,65
+# Christmas easter egg (see src/core/santa.h)
+SLEI,sleigh,Santa's sleigh (9 reindeer)

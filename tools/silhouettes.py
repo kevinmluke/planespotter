@@ -784,4 +784,39 @@ def b_v22():
     return s
 
 
+def b_sleigh():
+    """Christmas easter egg: Santa's sleigh behind a team of reindeer (flying right)."""
+    s = Sil()
+    # Sleigh body with a high curled front, Santa and his sack
+    body = [(0, 6), (2, 15), (8, 16), (10, 11), (30, 11), (34, 18), (38, 19), (40, 16), (37, 10), (34, 4), (4, 3)]
+    s.poly(body)
+    s.poly(ellipse(6, 20, 6.5, 6.0, n=24))            # sack
+    s.poly(ellipse(20, 17, 5.0, 6.5, n=20))           # Santa's body
+    s.poly(ellipse(21, 26, 3.0, 3.0, n=16))           # head
+    s.poly([(18, 28), (24, 28), (22, 34), (19.5, 33)])  # hat
+    s.poly(ellipse(19, 34.5, 1.3, 1.3, n=10))         # pompom
+    s.white(ellipse(22.5, 26.5, 0.8, 0.8, n=8))       # eye
+    # Runner with a front curl, on two struts
+    s.line([(-2, -1), (36, -1)], 1.4)
+    s.line(quad_bezier((36, -1), (44, -1), (42, 6), 8), 1.4)
+    s.line([(8, 3), (8, -1)], 1.2)
+    s.line([(30, 4), (30, -1)], 1.2)
+    # Reindeer: three pairs seen from the side, galloping
+    for i, x in enumerate((52, 72, 92)):
+        y = 12 + (i % 2) * 1.5
+        s.poly(ellipse(x, y, 7.5, 3.6, n=24))                       # body
+        s.poly([(x + 5, y + 2), (x + 9, y + 9), (x + 11, y + 8), (x + 8, y)])  # neck
+        s.poly(ellipse(x + 11.5, y + 9.5, 3.0, 1.7, n=14))           # head
+        s.line([(x + 10, y + 11), (x + 9, y + 15), (x + 7, y + 17)], 0.8)   # antlers
+        s.line([(x + 9, y + 15), (x + 11, y + 17)], 0.8)
+        s.line([(x + 11, y + 11), (x + 12, y + 15), (x + 14, y + 16)], 0.8)
+        s.line([(x + 5, y - 2), (x + 10, y - 6)], 1.0)               # front legs, stretched forward
+        s.line([(x + 3, y - 2), (x + 7, y - 7)], 1.0)
+        s.line([(x - 5, y - 2), (x - 10, y - 5)], 1.0)               # back legs, stretched back
+        s.line([(x - 3, y - 2), (x - 7, y - 7)], 1.0)
+        s.poly(ellipse(x - 7.5, y + 2, 1.5, 1.0, n=8))               # tail
+    s.line([(38, 14), (52, 13), (72, 14.5), (92, 13)], 0.7)          # harness
+    return s
+
+
 BUILDERS = {name[2:]: fn for name, fn in globals().items() if name.startswith("b_") and callable(fn)}

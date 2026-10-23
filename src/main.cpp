@@ -28,6 +28,7 @@
 #include "net/http.h"
 #include "net/ota.h"
 #include "net/portal.h"
+#include "core/santa.h"
 #include "ui/screens.h"
 
 using i18n::S;
@@ -585,7 +586,14 @@ void fillAircraftView(ui::AircraftView& v, const ac::Aircraft& a, const ac::Sele
   if (route && route->known && route->airline[0]) snprintf(v.airline, sizeof(v.airline), "%s", route->airline);
   else if (al) snprintf(v.airline, sizeof(v.airline), "%s", al->name);
   snprintf(v.flight, sizeof(v.flight), "%s", route && route->flightIata[0] ? route->flightIata : a.callsign);
-  if (route && route->known && route->plausible) {
+  if (strcmp(a.hex, santa::kHex) == 0) {
+    v.hasRoute = true;
+    snprintf(v.originCity, sizeof(v.originCity), "North Pole");
+    snprintf(v.originCode, sizeof(v.originCode), "NPL");
+    snprintf(v.destCity, sizeof(v.destCity), "Every home");
+    snprintf(v.destCode, sizeof(v.destCode), "XMS");
+    v.routeProgress = 0.5f;
+  } else if (route && route->known && route->plausible) {
     v.hasRoute = true;
     snprintf(v.originCity, sizeof(v.originCity), "%s", route->originCity);
     snprintf(v.originCode, sizeof(v.originCode), "%s", route->originCode);
@@ -733,6 +741,15 @@ void render() {
                                                   : ui::Freshness::Offline;
   const bool aircraftUsable = fresh != ui::Freshness::Offline;
 
+  // ---- Christmas easter egg: around local midnight on December 24, Santa's sleigh flies
+  // over the home and joins the aircraft list (it then takes over as a rare aircraft).
+  if (aircraftUsable && gSettings.hasLocation && timeValid() && snap.count < feeds::kMaxAircraft) {
+    ac::Aircraft sleigh;
+    if (santa::sleigh(time(nullptr), gSettings.lat, gSettings.lon, gSettings.rareRangeKm, sleigh)) {
+      snap.list[snap.count++] = sleigh;
+    }
+  }
+
   // ---- Aircraft selection (rarity, emergencies, hysteresis)
   static ac::Rarity rar[feeds::kMaxAircraft];
   for (int i = 0; i < snap.count; i++) {
@@ -750,8 +767,8 @@ void render() {
   for (int i = 0; i < snap.count; i++)
     if (snap.list[i].distKm <= gSettings.rangeKm && !snap.list[i].onGround) inRange++;
 
-  // Ask the network task for the route of whatever is on screen
-  if (sel.index >= 0) {
+  // Ask the network task for the route of whatever is on screen (Santa needs no lookup)
+  if (sel.index >= 0 && strcmp(snap.list[sel.index].hex, santa::kHex) != 0) {
     const ac::Aircraft& a = snap.list[sel.index];
     Lock l;
     snprintf(gShared.wantRoute, sizeof(gShared.wantRoute), "%s", a.callsign);
