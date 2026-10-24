@@ -1,5 +1,6 @@
 // HTTPS helpers. Every request verifies the server against the Mozilla root
-// bundle that ships with the ESP32 core.
+// bundle that ships with the ESP32 core. Any successful request also counts as the
+// health signal for freshly installed firmware (see ota::reportHealthy()).
 #pragma once
 
 #include <Arduino.h>
@@ -8,8 +9,11 @@
 namespace http {
 
 struct Result {
-  int status = 0;  // HTTP status, or a negative HTTPClient error
+  int status = 0;            // HTTP status, or a negative HTTPClient error
+  uint32_t retryAfterS = 0;  // from a Retry-After header (seconds), 0 if none
   bool ok() const { return status >= 200 && status < 300; }
+  // Network trouble, rate limited or a server error: back off before asking again.
+  bool retryable() const { return status < 0 || status == 429 || status >= 500; }
 };
 
 // GET + streamed JSON parse with an ArduinoJson filter (keeps RAM small for big responses).

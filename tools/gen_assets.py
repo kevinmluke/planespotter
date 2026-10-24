@@ -305,7 +305,7 @@ int typeRarity(const TypeInfo* t) {{
 """)
 
     # ---- silhouettes
-    small_imgs, large_imgs = [], []
+    small_imgs = []
     with open(os.path.join(GEN, "silhouettes.cpp"), "w") as f:
         f.write(HEADER + '#include "aircraft_db.h"\n\nnamespace db {\nnamespace {\n\n')
         for key, *_ in families:
@@ -313,7 +313,6 @@ int typeRarity(const TypeInfo* t) {{
             small = render_silhouette(sil, SIL_SMALL)
             large = render_silhouette(sil, SIL_LARGE)
             small_imgs.append(small)
-            large_imgs.append(large)
             f.write(f"// {key}\nconst uint8_t s_{key}[] = {{\n{bytes_to_c(bitmap_bytes(small))}\n}};\n")
             f.write(f"const uint8_t l_{key}[] = {{\n{bytes_to_c(bitmap_bytes(large))}\n}};\n\n")
         f.write("}  // namespace\n\n")
@@ -324,24 +323,20 @@ int typeRarity(const TypeInfo* t) {{
     # ---- contact sheet
     cols = 6
     cw, ch = SIL_SMALL[0] + 16, SIL_SMALL[1] + 26
-    rows = (len(families) + cols - 1) // cols
+    # The sleigh is a surprise, so it stays off the public contact sheet.
+    shown = [(i, key) for i, (key, *_rest) in enumerate(families) if key != "sleigh"]
+    rows = (len(shown) + cols - 1) // cols
     sheet = Image.new("1", (cols * cw, rows * ch), 1)
     sd = ImageDraw.Draw(sheet)
-    for i, (key, name, *_rest) in enumerate(families):
-        x, y = (i % cols) * cw + 8, (i // cols) * ch + 4
+    for n, (i, key) in enumerate(shown):
+        x, y = (n % cols) * cw + 8, (n // cols) * ch + 4
         sheet.paste(small_imgs[i], (x, y))
         sd.text((x, y + SIL_SMALL[1] + 4), f"{i} {key}", fill=0)
     os.makedirs(os.path.join(ROOT, "docs"), exist_ok=True)
     sheet.save(os.path.join(ROOT, "docs", "silhouettes.png"))
-    big = Image.new("1", (SIL_LARGE[0] * 3 + 40, SIL_LARGE[1] * 4 + 50), 1)
-    showcase = ["a380", "beluga", "b747", "concorde", "fighter", "helicopter", "a400m", "b52", "v22", "b787", "atr", "bizjet"]
-    for i, key in enumerate(showcase):
-        big.paste(large_imgs[fam_index[key]], ((i % 3) * (SIL_LARGE[0] + 10) + 10, (i // 3) * (SIL_LARGE[1] + 10) + 10))
-    big.save(os.path.join(ROOT, "docs", "silhouettes_large.png"))
 
     # ---- world map
     world = render_worldmap(MAP_SIZE)
-    world.save(os.path.join(ROOT, "docs", "worldmap.png"))
     with open(os.path.join(GEN, "worldmap.cpp"), "w") as f:
         f.write(HEADER + '#include "aircraft_db.h"\n\nnamespace db {\n\n')
         f.write("// Natural Earth 1:110m land, equirectangular, 1 = land.\n")

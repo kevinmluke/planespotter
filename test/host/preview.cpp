@@ -9,7 +9,6 @@
 
 #include "../../src/core/geo.h"
 #include "../../src/core/iss.h"
-#include "../../src/core/santa.h"
 #include "../../src/generated/aircraft_db.h"
 #include "../../src/ui/screens.h"
 
@@ -35,10 +34,11 @@ static bool gDark = false;
 static void setCommon(Common& c, Lang lang, Freshness fr = Freshness::Live) {
   c.dark = gDark;
   c.lang = lang;
-  c.units = lang == Lang::FR ? Units::Metric : Units::Aviation;
+  c.units = lang == Lang::FR ? Units::Metric : Units::Imperial;
+  c.clock24 = lang == Lang::FR;
   c.status.freshness = fr;
   c.status.delaySec = 47;
-  std::strcpy(c.status.clock, "21:04");
+  std::strcpy(c.status.clock, lang == Lang::FR ? "21:04" : "9:04 PM");
   c.status.aircraftCount = 14;
   c.status.mode = Mode::Auto;
 }
@@ -51,17 +51,18 @@ static void addBlips(Blip* b, int& n, bool withSelected) {
 }
 
 static void aircraftSample(AircraftView& a, Lang lang) {
-  std::strcpy(a.flight, "AF1234");
-  std::strcpy(a.callsign, "AFR1234");
-  std::strcpy(a.airline, "Air France");
+  const bool fr = lang == Lang::FR;
+  std::strcpy(a.flight, fr ? "AF1234" : "UA1234");
+  std::strcpy(a.callsign, fr ? "AFR1234" : "UAL1234");
+  std::strcpy(a.airline, fr ? "Air France" : "United");
   std::strcpy(a.model, "Airbus A320neo");
-  std::strcpy(a.reg, "F-HBNA");
+  std::strcpy(a.reg, fr ? "F-HBNA" : "N401UA");
   std::strcpy(a.typeCode, "A20N");
   a.hasRoute = true;
-  std::strcpy(a.originCity, "Paris");
-  std::strcpy(a.originCode, "CDG");
-  std::strcpy(a.destCity, lang == Lang::FR ? "Montréal" : "New York");
-  std::strcpy(a.destCode, lang == Lang::FR ? "YUL" : "JFK");
+  std::strcpy(a.originCity, fr ? "Paris" : "San Francisco");
+  std::strcpy(a.originCode, fr ? "CDG" : "SFO");
+  std::strcpy(a.destCity, fr ? "Montréal" : "New York");
+  std::strcpy(a.destCode, fr ? "YUL" : "JFK");
   a.routeProgress = 0.08f;
   a.altFt = 23450;
   a.vrateFpm = 1850;
@@ -87,7 +88,7 @@ int main() {
     Lang lang;
     bool dark;
   };
-  for (Variant v : {Variant{Lang::EN, false}, Variant{Lang::FR, false}, Variant{Lang::EN, true}, Variant{Lang::FR, true}}) {
+  for (Variant v : {Variant{Lang::EN, false}, Variant{Lang::EN, true}}) {  // the UI is English-only
     const Lang lang = v.lang;
     gDark = v.dark;
     const std::string sfx = std::string(lang == Lang::FR ? "_fr" : "_en") + (v.dark ? "_dark" : "");
@@ -225,7 +226,7 @@ int main() {
     os = OfflineScreen();
     setCommon(os.c, lang, Freshness::Offline);
     os.reason = OfflineReason::Wifi;
-    std::strcpy(os.lastUpdate, lang == Lang::FR ? "à 20:51" : "at 20:51");
+    std::strcpy(os.lastUpdate, lang == Lang::FR ? "à 20:51" : "at 8:51 PM");
     std::strcpy(os.detail, "Maison-5G");
     drawOffline(cv, os);
     save(canvas, "10_offline" + sfx);
@@ -243,37 +244,6 @@ int main() {
     drawEmptySky(cv, es);
     save(canvas, "11_quiet" + sfx);
 
-    // Christmas easter egg: Santa's sleigh as a rare-aircraft takeover
-    {
-      const int64_t dec24 = 1798070400;
-      ac::Aircraft sl;
-      santa::sleigh(santa::midnightOverhead(dec24, -122.56) - 4 * 60, 37.97, -122.56, 80, sl);
-      as = AircraftScreen();
-      setCommon(as.c, lang);
-      std::strcpy(as.c.status.clock, "00:06");
-      std::strcpy(as.ac.flight, sl.callsign);
-      std::strcpy(as.ac.airline, "North Pole Express");
-      std::strcpy(as.ac.model, db::findType(santa::kType)->name);
-      std::strcpy(as.ac.reg, sl.reg);
-      std::strcpy(as.ac.typeCode, sl.type);
-      as.ac.hasRoute = true;
-      std::strcpy(as.ac.originCity, "North Pole");
-      std::strcpy(as.ac.originCode, "NPL");
-      std::strcpy(as.ac.destCity, "Every home");
-      std::strcpy(as.ac.destCode, "XMS");
-      as.ac.routeProgress = 0.5f;
-      as.ac.altFt = sl.altFt;
-      as.ac.vrateFpm = sl.vrateFpm;
-      as.ac.gsKt = sl.gsKt;
-      as.ac.trackDeg = sl.trackDeg;
-      as.ac.distKm = sl.distKm;
-      as.ac.bearingDeg = sl.bearingDeg;
-      as.ac.family = db::familyIndex("sleigh");
-      as.ac.takeover = true;
-      as.ac.reason = ac::RareReason::RareType;
-      drawAircraft(cv, as);
-      save(canvas, "18_santa" + sfx);
-    }
 
     // OTA message
     static MessageScreen ms;

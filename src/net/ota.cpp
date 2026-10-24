@@ -21,6 +21,10 @@ extern "C" bool verifyRollbackLater() { return true; }
 namespace ota {
 namespace {
 
+// A version that failed its health check is skipped for this long, then tried again
+// (the failure may have been the network rather than the firmware).
+constexpr int64_t kBadVersionRetryS = 7 * 86400;
+
 Progress gProgress;
 bool gPending = false;
 bool gValidated = false;
@@ -112,8 +116,12 @@ bool takeBootMessage(char* version, size_t n, bool& rolledBack) {
   }
   p.remove("otaTarget");
   rolledBack = pending != FW_VERSION;
-  // Never retry a version that failed its health check; a newer release clears this.
-  if (rolledBack) p.putString("otaBad", pending);
+  // Skip a version that failed its health check for a while; a newer release clears this.
+  // The clock isn't set yet at boot: checkAndInstall() records when the skip started.
+  if (rolledBack) {
+    p.putString("otaBad", pending);
+    p.remove("otaBadAt");
+  }
   p.end();
   snprintf(version, n, "%s", FW_VERSION);
   return true;
@@ -123,7 +131,6 @@ const Progress& progress() { return gProgress; }
 
 bool checkAndInstall(const char* manifestUrl, void (*cb)(const Progress&)) {
   gProgress = Progress();
-  if (pendingVerify()) return false;  // never stack updates on an unproven image
   setPhase(Phase::Checking, nullptr, 0);
 
   JsonDocument filter;
@@ -141,16 +148,23 @@ bool checkAndInstall(const char* manifestUrl, void (*cb)(const Progress&)) {
 
   String message = String("planespotter-fw\n") + version + "\n" + size + "\n" + sha + "\n" + url + "\n";
   if (!verifySignature(message, sig)) return fail("bad signature", nullptr);
+  reportHealthy();  // a verified manifest proves networking, TLS and crypto work
+  if (pendingVerify()) return false;  // never stack updates on an unproven image
   if (compareVersions(version, FW_VERSION) <= 0) {
     setPhase(Phase::UpToDate, nullptr);
     return false;
   }
   {
     Preferences p;
-    p.begin("cache", true);
+    p.begin("cache", false);
     const String bad = p.getString("otaBad", "");
+    int64_t badAt = p.getLong64("otaBadAt", 0);
+    const int64_t now = time(nullptr);
+    const bool clockSet = now > 1700000000;
+    if (bad == version && !badAt && clockSet) p.putLong64("otaBadAt", badAt = now);
     p.end();
-    if (bad == version) return fail("version previously rolled back", nullptr);
+    if (bad == version && (!clockSet || !badAt || now < badAt || now - badAt < kBadVersionRetryS))
+      return fail("version previously rolled back", nullptr);
   }
   snprintf(gProgress.version, sizeof(gProgress.version), "%s", version);
   log_i("Installing %s (%u bytes)", version, size);

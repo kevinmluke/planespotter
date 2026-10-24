@@ -11,9 +11,6 @@ struct Settings {
   // Wi-Fi
   char ssid[33] = "";
   char password[65] = "";
-  // WPA2-Enterprise (PEAP): set for work networks that ask for a username.
-  char eapUser[64] = "";
-  char eapIdentity[64] = "";  // outer identity; empty = same as eapUser
   // Location
   bool hasLocation = false;
   double lat = 0, lon = 0;
@@ -22,7 +19,8 @@ struct Settings {
   char tz[64] = "UTC0";  // POSIX TZ string
   // Display
   i18n::Lang lang = i18n::Lang::EN;
-  text::Units units = text::Units::Aviation;
+  text::Units units = text::Units::Imperial;
+  bool clock24 = false;       // false: 12-hour clock (9:41 PM)
   ui::Mode mode = ui::Mode::Auto;
   bool darkTheme = false;     // white on black
   uint16_t rangeKm = 30;      // closest-aircraft radius

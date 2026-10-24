@@ -6,8 +6,9 @@
 //   -> image streamed into the inactive OTA slot while hashing
 //   -> hash must match the signed one, otherwise the slot is discarded
 //   -> reboot into the new image in "pending verify" state
-//   -> the new image must reach the flight API within OTA_HEALTH_DEADLINE_MS,
+//   -> the new image must complete an HTTPS request within OTA_HEALTH_DEADLINE_MS,
 //      otherwise (or if it crashes/reboots first) the bootloader rolls back.
+//      A rolled-back version is skipped for 7 days, then tried again.
 #pragma once
 
 #include <Arduino.h>
@@ -28,7 +29,7 @@ void begin();
 
 // True while the running image still has to prove itself.
 bool pendingVerify();
-// Health signal: call when the firmware did something useful (e.g. fetched aircraft).
+// Health signal: call when the firmware did something useful (any successful HTTPS request).
 void reportHealthy();
 // Call regularly: rolls back if the health deadline passed.
 void tick();

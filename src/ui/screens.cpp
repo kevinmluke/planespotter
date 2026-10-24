@@ -225,11 +225,14 @@ void drawQr(Canvas& cv, int x, int y, int maxSize, const char* payload) {
 // ---------------------------------------------------------------------------
 // Shared pieces
 
-void formatLocalTime(int64_t unixT, int tzOffsetS, char* out, size_t n) {
+// "21:04", or "9:04 PM" when !h24
+void formatLocalTime(int64_t unixT, int tzOffsetS, bool h24, char* out, size_t n) {
   const int64_t local = unixT + tzOffsetS;
   int64_t daySec = local % 86400;
   if (daySec < 0) daySec += 86400;
-  std::snprintf(out, n, "%02d:%02d", static_cast<int>(daySec / 3600), static_cast<int>((daySec / 60) % 60));
+  const int h = static_cast<int>(daySec / 3600), m = static_cast<int>((daySec / 60) % 60);
+  if (h24) std::snprintf(out, n, "%02d:%02d", h, m);
+  else std::snprintf(out, n, "%d:%02d %s", (h + 11) % 12 + 1, m, h < 12 ? "AM" : "PM");
 }
 
 int64_t localDay(int64_t unixT, int tzOffsetS) {
@@ -244,10 +247,10 @@ const char* weekday(Lang lang, int64_t day) {
   return lang == Lang::FR ? fr[i] : en[i];
 }
 
-// "Today 21:14", "Tomorrow 05:32", "Wed 22:01"
-void formatWhen(Lang lang, int64_t t, int64_t now, int tz, char* out, size_t n) {
-  char hm[8];
-  formatLocalTime(t, tz, hm, sizeof(hm));
+// "Today 21:14", "Tomorrow 05:32", "Wed 10:01 PM"
+void formatWhen(Lang lang, bool h24, int64_t t, int64_t now, int tz, char* out, size_t n) {
+  char hm[12];
+  formatLocalTime(t, tz, h24, hm, sizeof(hm));
   const int64_t dd = localDay(t, tz) - localDay(now, tz);
   const char* day = dd == 0 ? tr(lang, S::Today) : dd == 1 ? tr(lang, S::Tomorrow) : weekday(lang, localDay(t, tz));
   std::snprintf(out, n, "%s %s", day, hm);
@@ -600,7 +603,7 @@ void drawEmptySky(Canvas& cv, const EmptySkyScreen& s) {
     cv.g.drawFastHLine(24, 168, 480, gInk);
     drawText(cv, F_LABEL, 24, 192, tr(s.c.lang, S::NextVisiblePass));
     char when[48];
-    formatWhen(s.c.lang, s.nextPass.visStart.t, s.now, s.tzOffsetS, when, sizeof(when));
+    formatWhen(s.c.lang, s.c.clock24, s.nextPass.visStart.t, s.now, s.tzOffsetS, when, sizeof(when));
     std::snprintf(line, sizeof(line), "ISS  ·  %s  ·  max %d°", when, static_cast<int>(std::lround(s.nextPass.visMax.elDeg)));
     drawText(cv, F_MED_B, 24, 222, line);
   }
@@ -745,8 +748,9 @@ void drawIssMap(Canvas& cv, const IssMapScreen& s) {
   drawText(cv, F_LABEL, x0, 166, tr(s.c.lang, S::NextVisiblePass));
   if (s.hasPass) {
     char when[48];
-    formatWhen(s.c.lang, s.nextPass.visStart.t, s.now, s.tzOffsetS, when, sizeof(when));
-    drawText(cv, F_VALUE, x0, 196, when);
+    formatWhen(s.c.lang, s.c.clock24, s.nextPass.visStart.t, s.now, s.tzOffsetS, when, sizeof(when));
+    const uint8_t* const whenFonts[] = {F_VALUE, F_MED_B};
+    drawFit(cv, whenFonts, 2, x0, 196, kW - x0 - 8, when);
     const int az = geo::compassIndex16(s.nextPass.visStart.azDeg);
     const int mins = static_cast<int>(std::lround((s.nextPass.visEnd.t - s.nextPass.visStart.t) / 60.0));
     std::snprintf(buf, sizeof(buf), fr ? "max %d°  ·  %d min  ·  depuis %s" : "max %d°  ·  %d min  ·  from %s",
@@ -831,14 +835,14 @@ void drawIssAlert(Canvas& cv, const IssAlertScreen& s) {
   cc.status.aircraftCount = -1;
   statusBar(cv, cc, 470, kW - 8, 24, true);
 
-  char line[96], hm[8];
+  char line[96], hm[12];
   if (!s.inProgress) {
     const int64_t secs = p.visStart.t - s.now;
     const int mins = static_cast<int>((secs + 59) / 60);
     if (secs < 60) std::snprintf(line, sizeof(line), "< 1 min");
     else std::snprintf(line, sizeof(line), "%d min", mins);
     const int w = drawText(cv, F_GIANT, 14, 96, line);
-    formatLocalTime(p.visStart.t, s.tzOffsetS, hm, sizeof(hm));
+    formatLocalTime(p.visStart.t, s.tzOffsetS, s.c.clock24, hm, sizeof(hm));
     std::snprintf(line, sizeof(line), L == Lang::FR ? "à %s" : "at %s", hm);
     drawText(cv, F_MED, 24 + w, 96, line);
 
@@ -866,7 +870,7 @@ void drawIssAlert(Canvas& cv, const IssAlertScreen& s) {
     drawText(cv, F_VALUE, 16, 136, line);
     dirSentence(L, S::DisappearsIn, p.visEnd.azDeg, line, sizeof(line));
     char t2[120];
-    formatLocalTime(p.visEnd.t, s.tzOffsetS, hm, sizeof(hm));
+    formatLocalTime(p.visEnd.t, s.tzOffsetS, s.c.clock24, hm, sizeof(hm));
     std::snprintf(t2, sizeof(t2), "%s  ·  %s", line, hm);
     drawText(cv, F_MED, 16, 176, t2);
   }

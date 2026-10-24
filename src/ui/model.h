@@ -20,7 +20,7 @@ enum class Mode : uint8_t { Auto = 0, Aircraft = 1, Iss = 2 };
 struct Status {
   Freshness freshness = Freshness::Live;
   int delaySec = 0;
-  char clock[8] = "--:--";   // local time HH:MM
+  char clock[10] = "--:--";  // local time: "21:04" or "9:04 PM"
   int aircraftCount = -1;    // -1: don't show
   Mode mode = Mode::Auto;
   bool wifiOk = true;
@@ -29,7 +29,8 @@ struct Status {
 struct Common {
   bool dark = false;  // dark theme: white on black
   Lang lang = Lang::EN;
-  Units units = Units::Aviation;
+  Units units = Units::Imperial;
+  bool clock24 = false;  // false: 12-hour times (9:04 PM)
   Status status;
 };
 

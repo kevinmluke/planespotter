@@ -1,4 +1,4 @@
-// Host unit tests for the pure-C++ core (geo, text, i18n, rarity/selection, data tables).
+// Host unit tests for the pure-C++ core (geo, text, i18n, rarity/selection, data tables, timing).
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -8,6 +8,7 @@
 #include "../../src/core/i18n.h"
 #include "../../src/core/santa.h"
 #include "../../src/core/text.h"
+#include "../../src/core/timing.h"
 #include "../../src/generated/aircraft_db.h"
 
 static int failures = 0, checks = 0;
@@ -213,6 +214,69 @@ static void testSanta() {
   CHECK(r.index == 1 && r.takeover && r.rarity.reason == ac::RareReason::RareType);
 }
 
+static void testTiming() {
+  // Wrap-safe intervals: millis() rolls over every ~49.7 days.
+  const uint32_t nearWrap = 0xFFFFFFFFu - 1000;
+  CHECK(!timing::elapsed(nearWrap + 500, nearWrap, 2000));
+  CHECK(!timing::elapsed(500, nearWrap, 2000));   // 1501 ms later, past the wrap
+  CHECK(timing::elapsed(1000, nearWrap, 2000));   // 2001 ms later
+  CHECK(timing::elapsed(180000, 0, 180000));      // first OTA check, 3 min after boot
+  CHECK(!timing::elapsed(179999, 0, 180000));
+  // The old `now >= next` form fired on every pass after the wrap; this one doesn't.
+  const uint32_t day = 24UL * 3600 * 1000;
+  CHECK(!timing::elapsed(1000, 0xFFFFFFFFu - day / 2, day));
+
+  // +/-20% jitter stays in range and covers both ends
+  uint32_t lo = 0xFFFFFFFFu, hi = 0;
+  for (uint32_t rnd = 0; rnd < 5000; rnd += 7) {
+    const uint32_t j = timing::jitter(8000, rnd * 2654435761u);
+    lo = j < lo ? j : lo;
+    hi = j > hi ? j : hi;
+  }
+  CHECK(lo >= 6400 && lo < 6600 && hi <= 9600 && hi > 9400);
+  CHECK(timing::jitter(0, 12345) == 0);
+
+  CHECK(timing::parseRetryAfterS("120") == 120);
+  CHECK(timing::parseRetryAfterS(" 30 ") == 30);
+  CHECK(timing::parseRetryAfterS("") == 0);
+  CHECK(timing::parseRetryAfterS(nullptr) == 0);
+  CHECK(timing::parseRetryAfterS("Wed, 21 Oct 2026 07:28:00 GMT") == 0);
+  CHECK(timing::parseRetryAfterS("99999999999") == 86400);
+
+  // Exponential back-off, capped, honouring Retry-After, across the wrap
+  timing::Backoff b(8000, 60000);
+  CHECK(b.ready(0) && b.waitMs() == 0);
+  b.failure(nearWrap);
+  CHECK(b.waitMs() == 8000 && !b.ready(nearWrap + 7999) && b.ready(nearWrap + 8000));
+  b.failure(nearWrap);
+  CHECK(b.waitMs() == 16000);
+  for (int i = 0; i < 40; i++) b.failure(nearWrap);
+  CHECK(b.waitMs() == 60000 && !b.ready(50000) && b.ready(60000));
+  b.success();
+  CHECK(b.ready(nearWrap) && b.failures() == 0);
+  b.failure(1000, 300);  // 429 with Retry-After: 300
+  CHECK(b.waitMs() == 300000 && !b.ready(300000) && b.ready(301000));
+}
+
+static void testTleRefresh() {
+  const int64_t t0 = 1798070400, refresh = 12 * 3600;
+  const uint32_t retry = 15 * 60 * 1000;
+  // Nothing cached, or a cache from before the download time was stored: fetch now.
+  CHECK(timing::tleFetchDue(false, 0, t0, refresh, false, 0, 1000, retry));
+  CHECK(timing::tleFetchDue(true, 0, t0, refresh, false, 0, 1000, retry));
+  // Downloaded recently: wait for 12 h, however old the TLE epoch is (CelesTrak's
+  // elements often lag a day or more, which used to mean a fetch every 15 min).
+  CHECK(!timing::tleFetchDue(true, t0, t0 + 60, refresh, true, 5000, 3600000, retry));
+  CHECK(!timing::tleFetchDue(true, t0, t0 + refresh - 1, refresh, true, 5000, 3600000, retry));
+  CHECK(timing::tleFetchDue(true, t0, t0 + refresh, refresh, true, 5000, 0xF0000000u, retry));
+  // Clock went backwards (e.g. a bad NTP answer was saved): refresh.
+  CHECK(timing::tleFetchDue(true, t0, t0 - 3600, refresh, false, 0, 1000, retry));
+  // A failed attempt retries after 15 min, also across the millis() wrap.
+  const uint32_t tried = 0xFFFFFFFFu - 1000;
+  CHECK(!timing::tleFetchDue(true, t0, t0 + refresh + 10, refresh, true, tried, tried + 60000, retry));
+  CHECK(timing::tleFetchDue(true, t0, t0 + refresh + 1000, refresh, true, tried, tried + retry, retry));
+}
+
 int main() {
   testGeo();
   testText();
@@ -220,6 +284,8 @@ int main() {
   testRarityAndSelection();
   testDb();
   testSanta();
+  testTiming();
+  testTleRefresh();
   std::printf("unit tests: %d checks, %s\n", checks, failures ? "FAILURES" : "OK");
   return failures ? 1 : 0;
 }

@@ -11,7 +11,6 @@ namespace app {
 struct WifiRequest {
   char ssid[33] = "";
   char pass[65] = "";
-  char user[64] = "";  // non-empty: WPA2-Enterprise (PEAP)
 };
 
 const Settings& settings();

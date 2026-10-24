@@ -116,6 +116,7 @@ void handleState() {
   o["lang"] = static_cast<int>(s.lang);
   o["theme"] = s.darkTheme ? 1 : 0;
   o["units"] = static_cast<int>(s.units);
+  o["clock24"] = s.clock24;
   o["mode"] = static_cast<int>(s.mode);
   o["range"] = s.rangeKm;
   o["rareRange"] = s.rareRangeKm;
@@ -135,7 +136,8 @@ void handleSave() {
   Settings s = app::settings();
   s.lang = (in["lang"] | 0) == 1 ? i18n::Lang::FR : i18n::Lang::EN;
   s.darkTheme = (in["theme"] | 0) == 1;
-  s.units = static_cast<text::Units>(constrain(in["units"] | 0, 0, 2));
+  s.units = static_cast<text::Units>(constrain(in["units"] | 2, 0, 2));
+  s.clock24 = in["clock24"] | false;
   s.mode = static_cast<ui::Mode>(constrain(in["mode"] | 0, 0, 2));
   s.rangeKm = constrain(in["range"] | 30, 2, 150);
   s.rareRangeKm = constrain(in["rareRange"] | 80, s.rangeKm, 250);
@@ -162,7 +164,6 @@ void handleSave() {
   if (hasWifi) {
     snprintf(req.ssid, sizeof(req.ssid), "%s", w["ssid"] | "");
     snprintf(req.pass, sizeof(req.pass), "%s", w["pass"] | "");
-    snprintf(req.user, sizeof(req.user), "%s", w["user"] | "");
   }
   gServer.send(200, "application/json", "{\"ok\":true}");
   app::submit(s, hasWifi ? &req : nullptr);

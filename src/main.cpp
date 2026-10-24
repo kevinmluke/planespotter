@@ -22,6 +22,7 @@
 #include "core/geo.h"
 #include "core/iss.h"
 #include "core/text.h"
+#include "core/timing.h"
 #include "generated/aircraft_db.h"
 #include "hw/display.h"
 #include "net/feeds.h"
@@ -83,6 +84,7 @@ struct Lock {
 };
 
 Settings gSettings;
+int64_t gTleOkUnix = 0;  // last successful ISS elements download (network task only)
 
 bool timeValid() { return time(nullptr) > 1700000000; }
 
@@ -93,6 +95,7 @@ void loadTleCache() {
   Preferences p;
   p.begin("cache", true);
   String a = p.getString("tle1", ""), b = p.getString("tle2", "");
+  gTleOkUnix = p.getLong64("tleAt", 0);
   p.end();
   iss::Tracker t;
   if (a.length() == 69 && b.length() == 69 && t.setTle(a.c_str(), b.c_str())) {
@@ -111,7 +114,8 @@ void otaProgressCb(const ota::Progress& p) {
 
 void netTask(void*) {
   uint32_t lastTleTry = 0, lastPassMs = 0, lastPassGen = 0, lastTleGenForPass = 0;
-  uint32_t nextOtaMs = OTA_CHECK_FIRST_MS;
+  uint32_t lastOtaMs = 0, otaWaitMs = OTA_CHECK_FIRST_MS;
+  uint32_t pollWaitMs = 0;  // ADSB_POLL_MS with +/-20% jitter
   iss::Tracker tracker;
   for (;;) {
     vTaskDelay(pdMS_TO_TICKS(200));
@@ -137,9 +141,10 @@ void netTask(void*) {
     }
 
     // ---- Aircraft
-    if (hasLoc && now - gShared.lastAttemptMs >= ADSB_POLL_MS) {
+    if (hasLoc && timing::elapsed(now, gShared.lastAttemptMs, pollWaitMs)) {
       static ac::Aircraft buf[feeds::kMaxAircraft];
       gShared.lastAttemptMs = now;
+      pollWaitMs = timing::jitter(ADSB_POLL_MS, esp_random());
       const feeds::AircraftResult r = feeds::fetchAircraft(lat, lon, radius, buf, feeds::kMaxAircraft);
       Lock l;
       gShared.lastStatus = r.status;
@@ -150,7 +155,6 @@ void netTask(void*) {
         gShared.lastOkMs = millis();
         gShared.lastOkUnix = time(nullptr);
       }
-      if (r.ok) ota::reportHealthy();
     }
 
     // ---- Route for the aircraft on screen (with a back-off if the lookup service is unreachable)
@@ -185,18 +189,21 @@ void netTask(void*) {
       strcpy(tle2, gShared.tle2);
       tleGen = gShared.tleGen;
     }
+    // Refreshed 12 h after the last successful download; failures retry every 15 min.
     if (timeValid()) {
       iss::Tracker t;
       const bool have = tleValid && t.setTle(tle1, tle2);
-      const double ageDays = have ? t.tleAgeDays(time(nullptr)) : 1e9;
-      if ((!have || ageDays * 86400 > TLE_REFRESH_S) && (lastTleTry == 0 || now - lastTleTry > 15 * 60 * 1000UL)) {
+      if (timing::tleFetchDue(have, gTleOkUnix, time(nullptr), TLE_REFRESH_S, lastTleTry != 0, lastTleTry, now,
+                              15 * 60 * 1000UL)) {
         lastTleTry = now;
         char a[70], b[70];
         if (feeds::fetchTle(a, b) && t.setTle(a, b)) {
+          gTleOkUnix = time(nullptr);
           Preferences p;
           p.begin("cache", false);
           p.putString("tle1", a);
           p.putString("tle2", b);
+          p.putLong64("tleAt", gTleOkUnix);
           p.end();
           Lock l;
           strcpy(gShared.tle1, a);
@@ -233,8 +240,9 @@ void netTask(void*) {
       autoUpd = gShared.autoUpdate;
     }
     const bool otaConfigured = strncmp(GITHUB_REPO, "YOUR-", 5) != 0;
-    if (otaConfigured && (otaReq || (autoUpd && now >= nextOtaMs && !ota::pendingVerify()))) {
-      nextOtaMs = now + OTA_CHECK_EVERY_MS;
+    if (otaConfigured && (otaReq || (autoUpd && timing::elapsed(now, lastOtaMs, otaWaitMs)))) {
+      lastOtaMs = now;
+      otaWaitMs = OTA_CHECK_EVERY_MS;
       {
         Lock l;
         gShared.otaRequested = false;
@@ -262,7 +270,8 @@ bool gTimeConfigured = false;
 
 bool gPortalOpen = false;
 bool gSettingsMode = false;      // opened by a long press (vs first-time setup)
-uint32_t gPortalCloseAtMs = 0;   // scheduled close (after a successful setup, or a request)
+uint32_t gPortalCloseFromMs = 0;   // scheduled close (after a successful setup, or a request)...
+uint32_t gPortalCloseAfterMs = 0;  // ...this long after gPortalCloseFromMs; 0 = none
 char gApSsid[33], gApPass[17];
 
 // Join attempt requested from the page
@@ -280,21 +289,18 @@ void configureTime() {
   gTimeConfigured = true;
 }
 
-void beginStation(const char* ssid, const char* pass, const char* eapUser, const char* eapIdentity) {
+// Personal (WPA2/WPA3) and open networks only. Work networks that ask for a username
+// (WPA2-Enterprise) are deliberately unsupported: without the employer's CA certificate
+// the device can't tell the real network from an impostor, and would hand over the login.
+void beginStation(const char* ssid, const char* pass) {
   WiFi.setHostname(MDNS_HOST);
-  if (eapUser && eapUser[0]) {
-    // WPA2-Enterprise, PEAP/MSCHAPv2 (the common office setup). The server certificate
-    // is not pinned: most networks don't publish theirs.
-    WiFi.begin(ssid, WPA2_AUTH_PEAP, eapIdentity && eapIdentity[0] ? eapIdentity : eapUser, eapUser, pass);
-  } else {
-    WiFi.begin(ssid, pass);
-  }
+  WiFi.begin(ssid, pass);
 }
 
 void connectSaved() {
   if (!gSettings.ssid[0]) return;
   WiFi.setAutoReconnect(true);
-  beginStation(gSettings.ssid, gSettings.password, gSettings.eapUser, gSettings.eapIdentity);
+  beginStation(gSettings.ssid, gSettings.password);
 }
 
 void openPortal(bool settingsMode) {
@@ -313,7 +319,7 @@ void openPortal(bool settingsMode) {
   portal::startAccessPoint(gApSsid, gApPass);
   gPortalOpen = true;
   gSettingsMode = settingsMode;
-  gPortalCloseAtMs = 0;
+  gPortalCloseAfterMs = 0;
   gJoin = ui::JoinResult::None;
   gForceRedraw = true;
 }
@@ -322,11 +328,16 @@ void closePortal() {
   if (!gPortalOpen) return;
   portal::stopAccessPoint();
   gPortalOpen = false;
-  gPortalCloseAtMs = 0;
+  gPortalCloseAfterMs = 0;
   gJoin = ui::JoinResult::None;
   if (WiFi.status() != WL_CONNECTED) connectSaved();
   WiFi.setAutoReconnect(true);
   gForceRedraw = true;
+}
+
+void schedulePortalClose(uint32_t delayMs) {
+  gPortalCloseFromMs = millis();
+  gPortalCloseAfterMs = delayMs;
 }
 
 bool setupComplete() { return gSettings.ssid[0] && gSettings.hasLocation; }
@@ -364,7 +375,7 @@ void startJoin(const app::WifiRequest& req) {
   gLastDisconnectReason = 0;
   WiFi.disconnect(false);
   delay(50);
-  beginStation(req.ssid, req.pass, req.user, nullptr);
+  beginStation(req.ssid, req.pass);
   gForceRedraw = true;
 }
 
@@ -376,11 +387,9 @@ void joinLoop() {
     if (r == ui::JoinResult::Ok) {
       snprintf(gSettings.ssid, sizeof(gSettings.ssid), "%s", gJoinReq.ssid);
       snprintf(gSettings.password, sizeof(gSettings.password), "%s", gJoinReq.pass);
-      snprintf(gSettings.eapUser, sizeof(gSettings.eapUser), "%s", gJoinReq.user);
-      gSettings.eapIdentity[0] = 0;
       settings::save(gSettings);
       configureTime();
-      gPortalCloseAtMs = now + 45000;  // let the phone show "All set" before the network disappears
+      schedulePortalClose(45000);  // let the phone show "All set" before the network disappears
     } else {
       // Reachable network, but no usable internet: go back to the previous one.
       WiFi.disconnect(false);
@@ -420,7 +429,7 @@ void netLoop() {
     connectSaved();
   }
   if (gPortalOpen) {
-    if (gPortalCloseAtMs && now > gPortalCloseAtMs && setupComplete()) closePortal();
+    if (gPortalCloseAfterMs && timing::elapsed(now, gPortalCloseFromMs, gPortalCloseAfterMs) && setupComplete()) closePortal();
     // Settings left open and untouched: close after 10 minutes.
     else if (gSettingsMode && gJoin != ui::JoinResult::Connecting && portal::idleMs() > 10 * 60 * 1000UL) closePortal();
   }
@@ -508,7 +517,8 @@ void formatClock(char* out, size_t n, time_t t) {
   }
   struct tm lt;
   localtime_r(&t, &lt);
-  strftime(out, n, "%H:%M", &lt);
+  if (gSettings.clock24) snprintf(out, n, "%02d:%02d", lt.tm_hour, lt.tm_min);
+  else snprintf(out, n, "%d:%02d %s", (lt.tm_hour + 11) % 12 + 1, lt.tm_min, lt.tm_hour < 12 ? "AM" : "PM");
 }
 
 ui::Common makeCommon(ui::Freshness f, int delaySec, int count) {
@@ -516,6 +526,7 @@ ui::Common makeCommon(ui::Freshness f, int delaySec, int count) {
   c.dark = gSettings.darkTheme;
   c.lang = gSettings.lang;
   c.units = gSettings.units;
+  c.clock24 = gSettings.clock24;
   c.status.freshness = f;
   c.status.delaySec = f == ui::Freshness::Delayed ? delaySec / 10 * 10 : 0;  // 10 s steps: fewer refreshes
   formatClock(c.status.clock, sizeof(c.status.clock), time(nullptr));
@@ -663,7 +674,7 @@ void showOffline(ui::OfflineReason reason, const char* detail, time_t lastOk) {
   gOs.reason = reason;
   if (detail) snprintf(gOs.detail, sizeof(gOs.detail), "%s", detail);
   if (lastOk && timeValid()) {
-    char hm[8];
+    char hm[12];
     formatClock(hm, sizeof(hm), lastOk);
     snprintf(gOs.lastUpdate, sizeof(gOs.lastUpdate), gSettings.lang == i18n::Lang::FR ? "à %s" : "at %s", hm);
   }
@@ -878,8 +889,6 @@ void submit(const Settings& s, const WifiRequest* wifi) {
   Settings next = s;
   snprintf(next.ssid, sizeof(next.ssid), "%s", gSettings.ssid);
   snprintf(next.password, sizeof(next.password), "%s", gSettings.password);
-  snprintf(next.eapUser, sizeof(next.eapUser), "%s", gSettings.eapUser);
-  snprintf(next.eapIdentity, sizeof(next.eapIdentity), "%s", gSettings.eapIdentity);
   gSettings = next;
   settings::save(gSettings);
   if (tzChanged && gTimeConfigured) configureTime();
@@ -899,7 +908,7 @@ void requestOtaCheck() {
 }
 
 void closeSettings() {
-  if (setupComplete()) gPortalCloseAtMs = millis() + 1000;  // after the response has gone out
+  if (setupComplete()) schedulePortalClose(1000);  // after the response has gone out
 }
 
 }  // namespace app
