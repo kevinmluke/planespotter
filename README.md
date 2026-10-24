@@ -291,3 +291,54 @@ test/host/      host unit tests, astro cross-checks, screen previews, mock devic
   Brightness (magnitude) is not predicted.
 - The hardware hasn't been tested on a real panel yet. Expect to fine-tune
   pins, SPI speed and refresh timing on the first boot.
+
+---
+
+## Licence and credits
+
+Copyright © 2026 Kevin Luke. PlaneSpotter is free software under the
+[GNU General Public License v3.0](LICENSE): you can share and modify it, but
+anything you distribute that's built from it must stay under the same licence
+with its source available. GPL-3.0 is required because the e-paper driver,
+GxEPD2, uses it. The enclosure model in `enclosure/` is covered by the same
+licence.
+
+### Data services
+
+The display fetches data directly from these free services. Thank you to the
+people who run them.
+
+| Service | Used for | Terms |
+|---|---|---|
+| [adsb.lol](https://adsb.lol) | Live aircraft positions | Data under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/) |
+| [adsb.fi](https://adsb.fi) | Aircraft positions (fallback) | Open data for personal, non-commercial use |
+| [adsbdb.com](https://www.adsbdb.com) | Routes and airlines | Free public API |
+| [hexdb.io](https://hexdb.io) | Routes (fallback) | Free public API |
+| [CelesTrak](https://celestrak.org) | ISS orbit (TLE) | Free; please keep downloads to a few a day |
+| NTP ([pool.ntp.org](https://www.ntppool.org), time.google.com) | Clock | |
+
+### Data built into the firmware
+
+| Data | Source | Licence |
+|---|---|---|
+| Towns | [GeoNames](https://www.geonames.org) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| Time zones | [IANA tz database](https://www.iana.org/time-zones) | Public domain |
+| World map | [Natural Earth](https://www.naturalearthdata.com) 1:110m land | Public domain |
+
+### Libraries and fonts
+
+| Component | Licence |
+|---|---|
+| [GxEPD2](https://github.com/ZinggJM/GxEPD2) | GPL-3.0 |
+| [Adafruit GFX](https://github.com/adafruit/Adafruit-GFX-Library) | BSD |
+| [Adafruit BusIO](https://github.com/adafruit/Adafruit_BusIO) | MIT |
+| [U8g2 for Adafruit GFX](https://github.com/olikraus/U8g2_for_Adafruit_GFX) | BSD 2-Clause |
+| [ArduinoJson](https://arduinojson.org) | MIT |
+| [QRCode](https://github.com/ricmoo/QRCode) | MIT |
+| [Arduino-ESP32](https://github.com/espressif/arduino-esp32) / ESP-IDF | LGPL-2.1 / Apache-2.0 |
+| FreeUniversal fonts (`fub`, `fur`), from SIL Sophia | SIL Open Font License 1.1 |
+| Adobe Helvetica bitmap fonts (`helv`), via X11 | X11/Adobe licence (see U8g2) |
+
+Airline and aircraft names are used only to identify what's flying overhead;
+they belong to their owners. PlaneSpotter isn't affiliated with any airline,
+aircraft maker or data provider.

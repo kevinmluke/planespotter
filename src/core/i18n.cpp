@@ -84,8 +84,6 @@ const Pair kStrings[] = {
     {S::Never, "never", "jamais"},
     {S::Retrying, "Retrying automatically", "Nouvelle tentative automatique"},
     {S::NotLive, "Nothing on this screen is live.", "Rien sur cet écran n'est en direct."},
-    {S::NeedHelp, "Still stuck? Contact Kevin Luke: luke.kevin@gmail.com",
-     "Besoin d'aide ? Kevin Luke : luke.kevin@gmail.com"},
 
     {S::Updating, "Updating to %s", "Mise à jour vers %s"},
     {S::DoNotUnplug, "Please keep the display plugged in.", "Merci de ne pas débrancher l'écran."},

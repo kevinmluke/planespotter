@@ -31,7 +31,8 @@ void load(Settings& s) {
   p.getString("place", s.placeName, sizeof(s.placeName));
   if (p.isKey("tz")) p.getString("tz", s.tz, sizeof(s.tz));
   s.lang = static_cast<i18n::Lang>(p.getUChar("lang", 0));
-  s.units = static_cast<text::Units>(p.getUChar("units", 0));
+  s.units = static_cast<text::Units>(p.getUChar("units", static_cast<uint8_t>(text::Units::Imperial)));
+  s.clock24 = p.getBool("clock24", false);
   s.mode = static_cast<ui::Mode>(p.getUChar("mode", 0));
   s.darkTheme = p.getBool("dark", false);
   s.rangeKm = p.getUShort("range", 30);
@@ -45,7 +46,7 @@ void load(Settings& s) {
   if (s.rangeKm < 2 || s.rangeKm > 150) s.rangeKm = 30;
   if (s.rareRangeKm < s.rangeKm || s.rareRangeKm > 250) s.rareRangeKm = s.rangeKm > 80 ? s.rangeKm : 80;
   if (static_cast<int>(s.lang) > 1) s.lang = i18n::Lang::EN;
-  if (static_cast<int>(s.units) > 2) s.units = text::Units::Aviation;
+  if (static_cast<int>(s.units) > 2) s.units = text::Units::Imperial;
   if (static_cast<int>(s.mode) > 2) s.mode = ui::Mode::Auto;
 }
 
@@ -64,6 +65,7 @@ void save(const Settings& s) {
   p.putString("tz", s.tz);
   p.putUChar("lang", static_cast<uint8_t>(s.lang));
   p.putUChar("units", static_cast<uint8_t>(s.units));
+  p.putBool("clock24", s.clock24);
   p.putUChar("mode", static_cast<uint8_t>(s.mode));
   p.putBool("dark", s.darkTheme);
   p.putUShort("range", s.rangeKm);

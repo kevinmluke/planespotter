@@ -517,7 +517,8 @@ void formatClock(char* out, size_t n, time_t t) {
   }
   struct tm lt;
   localtime_r(&t, &lt);
-  strftime(out, n, "%H:%M", &lt);
+  if (gSettings.clock24) snprintf(out, n, "%02d:%02d", lt.tm_hour, lt.tm_min);
+  else snprintf(out, n, "%d:%02d %s", (lt.tm_hour + 11) % 12 + 1, lt.tm_min, lt.tm_hour < 12 ? "AM" : "PM");
 }
 
 ui::Common makeCommon(ui::Freshness f, int delaySec, int count) {
@@ -525,6 +526,7 @@ ui::Common makeCommon(ui::Freshness f, int delaySec, int count) {
   c.dark = gSettings.darkTheme;
   c.lang = gSettings.lang;
   c.units = gSettings.units;
+  c.clock24 = gSettings.clock24;
   c.status.freshness = f;
   c.status.delaySec = f == ui::Freshness::Delayed ? delaySec / 10 * 10 : 0;  // 10 s steps: fewer refreshes
   formatClock(c.status.clock, sizeof(c.status.clock), time(nullptr));
@@ -672,7 +674,7 @@ void showOffline(ui::OfflineReason reason, const char* detail, time_t lastOk) {
   gOs.reason = reason;
   if (detail) snprintf(gOs.detail, sizeof(gOs.detail), "%s", detail);
   if (lastOk && timeValid()) {
-    char hm[8];
+    char hm[12];
     formatClock(hm, sizeof(hm), lastOk);
     snprintf(gOs.lastUpdate, sizeof(gOs.lastUpdate), gSettings.lang == i18n::Lang::FR ? "à %s" : "at %s", hm);
   }

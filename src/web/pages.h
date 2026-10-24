@@ -49,11 +49,12 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px;text-transform:up
 <div id="townChosen" class="card hide"><div class="chosen"><span id="townName"></span><a class="link" id="townChange" data-t="change"></a></div></div>
 <div id="townPick"><input type="search" id="q" autocomplete="off"><div class="card hide" id="results" style="margin-top:8px"></div>
 <p class="sub" style="font-size:13px;margin-top:6px"><a class="link" id="coordsLink" data-t="coords"></a></p>
-<div id="coordsBox" class="pair hide"><input type="number" step="any" id="lat" placeholder="48.8566"><input type="number" step="any" id="lon" placeholder="2.3522"></div></div>
+<div id="coordsBox" class="pair hide"><input type="number" step="any" id="lat" placeholder="37.9735"><input type="number" step="any" id="lon" placeholder="-122.5311"></div></div>
 
 <details id="more"><summary data-t="more"></summary><div class="card">
 <div class="row st"><span data-t="theme"></span><select id="theme"><option value="0" data-t="t0"></option><option value="1" data-t="t1"></option></select></div>
 <div class="row st"><span data-t="units"></span><select id="units"><option value="0" data-t="u0"></option><option value="1" data-t="u1"></option><option value="2" data-t="u2"></option></select></div>
+<div class="row st"><span data-t="clock"></span><select id="clock24"><option value="0" data-t="k0"></option><option value="1" data-t="k1"></option></select></div>
 <div class="row st"><span data-t="mode"></span><select id="mode"><option value="0" data-t="m0"></option><option value="1" data-t="m1"></option><option value="2" data-t="m2"></option></select></div>
 <div class="row"><span data-t="range"></span><input type="range" id="range" min="5" max="100" step="5"><b class="val" id="rangeV"></b></div>
 <div class="row st"><span data-t="rareLevel"></span><select id="rareLevel"><option value="0" data-t="r0"></option><option value="1" data-t="r1"></option><option value="2" data-t="r2"></option><option value="3" data-t="r3"></option></select></div>
@@ -65,15 +66,17 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px;text-transform:up
 <button id="save" data-t="save"></button>
 <div id="msg" class="msg"></div>
 <div id="extra" class="pair hide" style="margin-top:14px"><button class="sec" id="upd" data-t="check"></button><button class="sec" id="close" data-t="closeBtn"></button></div>
-<p class="foot"><span id="ver"></span><br><span data-t="mac"></span> <span id="mac"></span><br>Need help? Kevin Luke, <a href="mailto:luke.kevin@gmail.com">luke.kevin@gmail.com</a><br><span data-t="credit"></span></p>
+<p class="foot"><span id="ver"></span><br><span data-t="mac"></span> <span id="mac"></span><br><span data-t="credit"></span></p>
 </main><script>
 const T={
-en:{introSetup:"Two quick steps and the display starts showing the aircraft around you.",introSettings:"Change anything below, then press Save.",wifi:"Wi-Fi network",scanning:"Looking for networks…",none:"No networks found. Move closer to the router?",other:"Other network",only24:"2.4 GHz networks only",netName:"Network name",pass:"Password",entNo:"Work networks that ask for a username aren't supported. Use your home Wi-Fi, a guest network without a sign-in page, or your phone's hotspot.",town:"Where is the display?",search:"Type your town…",coords:"Enter exact coordinates instead",change:"Change",connected:"Connected to ",more:"More options",theme:"Theme",t0:"Light (black on white)",t1:"Dark (white on black)",units:"Units",u0:"Aviation (ft, kt)",u1:"Metric (m, km/h)",u2:"Imperial (ft, mph)",mode:"Show",m0:"Aircraft, ISS when quiet",m1:"Aircraft only",m2:"ISS only",range:"Closest aircraft within",rareLevel:"Take over the screen for",r0:"Never",r1:"Very rare aircraft only",r2:"Rare & military aircraft",r3:"Anything unusual",rareRange:"…when within",iss:"ISS alerts 10 min before a visible pass",auto:"Install updates automatically",save:"Save",check:"Check for updates",closeBtn:"Close settings",mac:"Device address (for IT):",credit:"Town list © GeoNames (CC BY 4.0)",needWifi:"Choose a Wi-Fi network first.",needTown:"Choose your town first.",connecting:"Connecting to the Wi-Fi… If this page stops responding, look at the display: it shows the result.",ok:"All set! Nearby aircraft will appear on the display within a minute. You can close this page.",saved:"Saved.",wrong_password:"The password was not accepted. Check it and try again.",not_found:"The display can't see this network. It only works with 2.4 GHz Wi-Fi.",captive:"This network needs a sign-in page (like hotel or guest Wi-Fi), which the display can't use. Choose another network.",no_internet:"Connected, but this network has no internet access.",failed:"Could not connect. Check the details and try again.",updating:"Checking for updates. If there is one, the display will install it and restart."}};
+en:{introSetup:"Two quick steps and the display starts showing the aircraft around you.",introSettings:"Change anything below, then press Save.",wifi:"Wi-Fi network",scanning:"Looking for networks…",none:"No networks found. Move closer to the router?",other:"Other network",only24:"2.4 GHz networks only",netName:"Network name",pass:"Password",entNo:"Work networks that ask for a username aren't supported. Use your home Wi-Fi, a guest network without a sign-in page, or your phone's hotspot.",town:"Where is the display?",search:"Type your town…",coords:"Enter exact coordinates instead",change:"Change",connected:"Connected to ",more:"More options",theme:"Theme",t0:"Light (black on white)",t1:"Dark (white on black)",units:"Units",u0:"Aviation (ft, kt)",u1:"Metric (m, km/h)",u2:"Imperial (ft, mph)",clock:"Clock",k0:"12-hour (9:41 PM)",k1:"24-hour (21:41)",mode:"Show",m0:"Aircraft, ISS when quiet",m1:"Aircraft only",m2:"ISS only",range:"Closest aircraft within",rareLevel:"Take over the screen for",r0:"Never",r1:"Very rare aircraft only",r2:"Rare & military aircraft",r3:"Anything unusual",rareRange:"…when within",iss:"ISS alerts 10 min before a visible pass",auto:"Install updates automatically",save:"Save",check:"Check for updates",closeBtn:"Close settings",mac:"Device address (for IT):",credit:"Town list © GeoNames (CC BY 4.0)",needWifi:"Choose a Wi-Fi network first.",needTown:"Choose your town first.",connecting:"Connecting to the Wi-Fi… If this page stops responding, look at the display: it shows the result.",ok:"All set! Nearby aircraft will appear on the display within a minute. You can close this page.",saved:"Saved.",wrong_password:"The password was not accepted. Check it and try again.",not_found:"The display can't see this network. It only works with 2.4 GHz Wi-Fi.",captive:"This network needs a sign-in page (like hotel or guest Wi-Fi), which the display can't use. Choose another network.",no_internet:"Connected, but this network has no internet access.",failed:"Could not connect. Check the details and try again.",updating:"Checking for updates. If there is one, the display will install it and restart."}};
 const $=s=>document.querySelector(s);let LG="en",ST={},sel={net:null,town:null},cities=null,TZ=[];
 function tr(){document.querySelectorAll("[data-t]").forEach(e=>e.textContent=T[LG][e.dataset.t]);$("#q").placeholder=T[LG].search;
 $("#intro").textContent=T[LG][ST.mode=="settings"?"introSettings":"introSetup"];
 if(ST.connectedSsid)$("#wifiCurName").textContent=T[LG].connected+ST.connectedSsid;km()}
-function km(){$("#rangeV").textContent=$("#range").value+" km";$("#rareRangeV").textContent=$("#rareRange").value+" km"}
+function dist(k){const u=+$("#units").value;return u==1?k+" km":u==0?Math.round(k/1.852)+" NM":Math.round(k/1.609344)+" mi"}
+function km(){$("#rangeV").textContent=dist(+$("#range").value);$("#rareRangeV").textContent=dist(+$("#rareRange").value)}
+$("#units").onchange=km;
 $("#range").oninput=()=>{if(+$("#rareRange").value<+$("#range").value)$("#rareRange").value=$("#range").value;km()};$("#rareRange").oninput=km;
 function show(el,on){$(el).classList.toggle("hide",!on)}
 function msg(kind,key){const m=$("#msg");m.className="msg "+kind;m.textContent=T[LG][key]||key}
@@ -107,7 +110,7 @@ async function state(){ST=await fetch("/api/state").then(r=>r.json());return ST}
 async function poll(){let s;try{s=await state()}catch(e){setTimeout(poll,1500);return}const j=s.join||{};
 if(j.state=="connecting"){setTimeout(poll,1000);return}$("#save").disabled=false;
 if(j.state=="ok"){msg("ok","ok");show("#extra",s.mode=="settings")}else if(j.state&&j.state!="idle"){msg("bad",j.state)}}
-$("#save").onclick=async()=>{const body={lang:0,theme:+$("#theme").value,units:+$("#units").value,mode:+$("#mode").value,range:+$("#range").value,rareRange:+$("#rareRange").value,rareLevel:+$("#rareLevel").value,issAlerts:$("#issAlerts").checked,autoUpdate:$("#autoUpdate").checked};
+$("#save").onclick=async()=>{const body={lang:0,theme:+$("#theme").value,units:+$("#units").value,clock24:$("#clock24").value=="1",mode:+$("#mode").value,range:+$("#range").value,rareRange:+$("#rareRange").value,rareLevel:+$("#rareLevel").value,issAlerts:$("#issAlerts").checked,autoUpdate:$("#autoUpdate").checked};
 const wifiOpen=!$("#wifiPick").classList.contains("hide");
 if(wifiOpen){const ssid=sel.net?sel.net.ssid:$("#ssid").value.trim();if(!ssid){msg("bad","needWifi");return}
 if(sel.net&&sel.net.ent){msg("bad","entNo");return}
@@ -121,7 +124,7 @@ if(body.wifi){msg("wait","connecting");setTimeout(poll,1500)}else{msg("ok","save
 $("#upd").onclick=async()=>{await fetch("/api/update",{method:"POST"}).catch(()=>{});msg("wait","updating")};
 $("#close").onclick=async()=>{await fetch("/api/close",{method:"POST"}).catch(()=>{})};
 (async()=>{try{await state()}catch(e){}const s=ST.settings||{};
-$("#theme").value=s.theme|0;$("#units").value=s.units|0;$("#mode").value=s.mode|0;$("#range").value=s.range||30;$("#rareRange").value=s.rareRange||80;
+$("#theme").value=s.theme|0;$("#units").value=s.units??2;$("#clock24").value=s.clock24?1:0;$("#mode").value=s.mode|0;$("#range").value=s.range||30;$("#rareRange").value=s.rareRange||80;km();
 $("#rareLevel").value=s.rareLevel??2;$("#issAlerts").checked=s.issAlerts!==false;$("#autoUpdate").checked=s.autoUpdate!==false;
 $("#ver").textContent="PlaneSpotter "+(ST.version||"");$("#mac").textContent=ST.mac||"";
 if(ST.connectedSsid){show("#wifiCurrent",true);show("#wifiPick",false)}else scan();
