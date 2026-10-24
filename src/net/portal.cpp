@@ -162,7 +162,6 @@ void handleSave() {
   if (hasWifi) {
     snprintf(req.ssid, sizeof(req.ssid), "%s", w["ssid"] | "");
     snprintf(req.pass, sizeof(req.pass), "%s", w["pass"] | "");
-    snprintf(req.user, sizeof(req.user), "%s", w["user"] | "");
   }
   gServer.send(200, "application/json", "{\"ok\":true}");
   app::submit(s, hasWifi ? &req : nullptr);

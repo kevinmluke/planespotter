@@ -16,9 +16,10 @@ and a 5.79" black-and-white e-paper panel (792 × 272).
   countdown says where to look, how high it will rise and where it will
   disappear, with a sky chart. During the pass it shows live direction.
 - **One-scan setup from your phone:** scan the QR code on the screen, pick
-  your Wi-Fi and type your town. It works on home and office networks,
-  including work Wi-Fi that asks for a username (WPA2-Enterprise). Available in
-  English and French.
+  your Wi-Fi and type your town. It works on home Wi-Fi, guest networks
+  without a sign-in page and phone hotspots. Work networks that ask for a
+  username (WPA2-Enterprise) are deliberately not supported, so nobody's work
+  login is ever stored on the display.
 - **Signed over-the-air updates** with automatic rollback.
 - **Light or dark theme** (black on white, or white on black), chosen on the
   settings page.
@@ -98,8 +99,8 @@ The first build downloads the ESP32 toolchain (a few hundred MB).
 1. The screen shows a QR code. Scanning it with a phone camera joins the
    display's own Wi-Fi network (`PlaneSpotter-XXXX`, password shown on screen),
    and the setup page opens by itself.
-2. Pick a Wi-Fi network (2.4 GHz). For work networks that ask for a username, a
-   username field appears.
+2. Pick a Wi-Fi network (2.4 GHz). Work networks that ask for a username show
+   a note suggesting home Wi-Fi, a guest network or a phone hotspot instead.
 3. Type a town. The list of 34,000 towns is stored on the display, so this
    works without internet. It also sets the time zone. Press **Save**.
 

@@ -7,11 +7,28 @@
 
 #include "../core/geo.h"
 #include "../core/text.h"
+#include "../core/timing.h"
 #include "config.h"
 #include "http.h"
 
 namespace feeds {
 namespace {
+
+// Per-service back-off after failures, rate limiting or server errors.
+timing::Backoff gAdsbBackoff[2] = {{ADSB_POLL_MS, 10 * 60 * 1000UL}, {ADSB_POLL_MS, 10 * 60 * 1000UL}};
+timing::Backoff gRouteBackoff(30000, 30 * 60 * 1000UL);
+timing::Backoff gHexdbBackoff(30000, 30 * 60 * 1000UL);
+timing::Backoff gTleBackoff(15 * 60 * 1000UL, 12 * 3600 * 1000UL);
+
+// Records the outcome of a request; true if it may be retried later (don't cache a negative answer).
+bool track(timing::Backoff& b, const http::Result& r) {
+  if (r.retryable()) {
+    b.failure(millis(), r.retryAfterS);
+    return true;
+  }
+  b.success();
+  return false;
+}
 
 void copyTrim(char* dst, size_t n, const char* src) {
   if (!src) {
@@ -78,10 +95,11 @@ Route* findCached(const char* cs) {
 Route* cacheSlot(const char* cs) {
   Route* r = findCached(cs);
   if (r) return r;
+  const uint32_t now = millis();
   Route* oldest = &gCache[0];
   for (auto& c : gCache) {
     if (!c.callsign[0]) return &c;
-    if (c.fetchedMs < oldest->fetchedMs) oldest = &c;
+    if (now - c.fetchedMs > now - oldest->fetchedMs) oldest = &c;  // compare ages: wrap-safe
   }
   return oldest;
 }
@@ -113,12 +131,18 @@ AircraftResult fetchAircraft(double lat, double lon, float radiusKm, ac::Aircraf
   const int nm = std::min(250, static_cast<int>(std::ceil(radiusKm / 1.852)) + 1);
   char url[160];
   JsonDocument doc;
-  http::Result r;
-  for (const char* fmt : {ADSB_URL_FMT, ADSB_FALLBACK_URL_FMT}) {
-    snprintf(url, sizeof(url), fmt, lat, lon, nm);
+  static http::Result r;  // keeps the last status while every source is backing off
+  const char* fmts[] = {ADSB_URL_FMT, ADSB_FALLBACK_URL_FMT};
+  for (int i = 0; i < 2; i++) {
+    if (!gAdsbBackoff[i].ready(millis())) continue;
+    snprintf(url, sizeof(url), fmts[i], lat, lon, nm);
     doc.clear();
     r = http::getJson(url, doc, aircraftFilter());
-    if (r.ok()) break;
+    if (r.ok()) {
+      gAdsbBackoff[i].success();
+      break;
+    }
+    gAdsbBackoff[i].failure(millis(), r.retryAfterS);
   }
   res.status = r.status;
   if (!r.ok()) return res;
@@ -171,8 +195,10 @@ bool lookupRoute(const char* callsign, double lat, double lon, Route& out) {
   for (const char* end : {"origin", "destination"}) {
     for (const char* k : {"municipality", "name", "iata_code", "icao_code", "latitude", "longitude"}) fr[end][k] = true;
   }
+  if (!gRouteBackoff.ready(millis())) return false;
   JsonDocument doc;
   http::Result hr = http::getJson(url, doc, filter, 8000);
+  if (track(gRouteBackoff, hr)) return false;  // network trouble: don't cache, try again later
   JsonObjectConst route = doc["response"]["flightroute"];
   if (hr.ok() && !route.isNull()) {
     r.known = true;
@@ -180,13 +206,15 @@ bool lookupRoute(const char* callsign, double lat, double lon, Route& out) {
     text::toFontSafe(route["airline"]["name"] | "", r.airline, sizeof(r.airline));
     airportFrom(route["origin"], r.originCity, sizeof(r.originCity), r.originCode, sizeof(r.originCode), r.oLat, r.oLon);
     airportFrom(route["destination"], r.destCity, sizeof(r.destCity), r.destCode, sizeof(r.destCode), r.dLat, r.dLon);
-  } else if (hr.status == 404 || hr.ok()) {
+  } else if ((hr.status == 404 || hr.ok()) && gHexdbBackoff.ready(millis())) {
     // Fallback: hexdb gives ICAO airport codes only ("LFPG-KJFK").
     snprintf(url, sizeof(url), ROUTE_FALLBACK_URL_FMT, r.callsign);
     JsonDocument hd;
     JsonDocument hf;
     hf["route"] = true;
-    if (http::getJson(url, hd, hf, 8000).ok()) {
+    const http::Result xr = http::getJson(url, hd, hf, 8000);
+    track(gHexdbBackoff, xr);
+    if (xr.ok()) {
       const char* rt = hd["route"] | "";
       const char* dash = strchr(rt, '-');
       if (dash && dash - rt == 4 && strlen(dash + 1) >= 4) {
@@ -195,8 +223,8 @@ bool lookupRoute(const char* callsign, double lat, double lon, Route& out) {
         copyTrim(r.destCode, sizeof(r.destCode), String(dash + 1).substring(0, 4).c_str());
       }
     }
-  } else {
-    return false;  // network trouble: don't cache, try again later
+  } else if (!hr.ok() && hr.status != 404) {
+    return false;  // unexpected answer: don't cache, try again later
   }
   r.fetchedMs = millis();
   r.plausible = r.known && plausible(r, lat, lon);
@@ -214,8 +242,11 @@ float routeProgress(const Route& r, double lat, double lon) {
 }
 
 bool fetchTle(char* line1, char* line2) {
+  if (!gTleBackoff.ready(millis())) return false;
   String body;
-  if (!http::getText(TLE_URL, body, 512).ok()) return false;
+  const http::Result r = http::getText(TLE_URL, body, 512);
+  track(gTleBackoff, r);
+  if (!r.ok()) return false;
   // Expect: name line, line 1, line 2
   int l1 = body.indexOf("\n1 ");
   int l2 = body.indexOf("\n2 ");

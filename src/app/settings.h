@@ -11,9 +11,6 @@ struct Settings {
   // Wi-Fi
   char ssid[33] = "";
   char password[65] = "";
-  // WPA2-Enterprise (PEAP): set for work networks that ask for a username.
-  char eapUser[64] = "";
-  char eapIdentity[64] = "";  // outer identity; empty = same as eapUser
   // Location
   bool hasLocation = false;
   double lat = 0, lon = 0;

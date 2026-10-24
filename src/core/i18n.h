@@ -26,7 +26,7 @@ enum class S : uint16_t {
   Connecting, ConnectedTo, FailPassword, FailNotFound, FailCaptive, FailNoInternet, FailGeneric, HoldForWifi,
   // Offline
   OfflineTitle, ReasonWifi, ReasonApi, ReasonTime, ReasonNoLocation, LastUpdate, Never,
-  Retrying, NotLive,
+  Retrying, NotLive, NeedHelp,
   // Updates
   Updating, DoNotUnplug, UpdatedTo, UpdateRolledBack,
   // Modes & button

@@ -24,8 +24,6 @@ void load(Settings& s) {
   p.begin(kNs, true);
   p.getString("ssid", s.ssid, sizeof(s.ssid));
   p.getString("pass", s.password, sizeof(s.password));
-  p.getString("eapUser", s.eapUser, sizeof(s.eapUser));
-  p.getString("eapId", s.eapIdentity, sizeof(s.eapIdentity));
   s.hasLocation = p.getBool("hasLoc", false);
   s.lat = p.getDouble("lat", 0);
   s.lon = p.getDouble("lon", 0);
@@ -56,8 +54,8 @@ void save(const Settings& s) {
   p.begin(kNs, false);
   p.putString("ssid", s.ssid);
   p.putString("pass", s.password);
-  p.putString("eapUser", s.eapUser);
-  p.putString("eapId", s.eapIdentity);
+  p.remove("eapUser");  // left over from builds that supported work (WPA2-Enterprise) logins
+  p.remove("eapId");
   p.putBool("hasLoc", s.hasLocation);
   p.putDouble("lat", s.lat);
   p.putDouble("lon", s.lon);

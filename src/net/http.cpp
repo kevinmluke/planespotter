@@ -3,7 +3,9 @@
 #include <HTTPClient.h>
 #include <NetworkClientSecure.h>
 
+#include "../core/timing.h"
 #include "config.h"
+#include "ota.h"
 
 namespace http {
 namespace {
@@ -21,7 +23,15 @@ bool begin(HTTPClient& h, NetworkClientSecure& c, const char* url, uint32_t time
   if (!h.begin(c, url)) return false;
   h.setUserAgent(kUserAgent);
   h.addHeader("Accept", "application/json, text/plain");
+  static const char* kCollect[] = {"Retry-After"};
+  h.collectHeaders(kCollect, 1);
   return true;
+}
+
+void finish(HTTPClient& h, Result& r) {
+  if (r.ok()) ota::reportHealthy();
+  if (r.status > 0) r.retryAfterS = timing::parseRetryAfterS(h.header("Retry-After").c_str());
+  h.end();
 }
 
 }  // namespace
@@ -45,7 +55,7 @@ Result getJson(const char* url, JsonDocument& doc, const JsonDocument& filter, u
   } else {
     log_w("HTTP %d for %s", r.status, url);
   }
-  h.end();
+  finish(h, r);
   return r;
 }
 
@@ -67,7 +77,7 @@ Result getText(const char* url, String& out, size_t maxLen, uint32_t timeoutMs) 
       delay(2);
     }
   }
-  h.end();
+  finish(h, r);
   return r;
 }
 

@@ -973,10 +973,11 @@ void drawOffline(Canvas& cv, const OfflineScreen& s) {
   const uint8_t* const reasonFonts[] = {F_MED_B, F_BODY_B};
   drawFit(cv, reasonFonts, 2, 162, 132, 600, line);
   std::snprintf(line, sizeof(line), tr(L, S::LastUpdate), s.lastUpdate[0] ? s.lastUpdate : tr(L, S::Never));
-  drawText(cv, F_BODY, 162, 162, line);
-  drawText(cv, F_BODY, 162, 188, tr(L, s.reason == OfflineReason::Wifi ? S::HoldForWifi : S::Retrying));
-  cv.g.drawFastHLine(40, 214, kW - 80, gInk);
-  drawText(cv, F_MED_B, kW / 2, 246, tr(L, S::NotLive), Align::Center);
+  drawText(cv, F_BODY, 162, 160, line);
+  drawText(cv, F_BODY, 162, 184, tr(L, s.reason == OfflineReason::Wifi ? S::HoldForWifi : S::Retrying));
+  drawText(cv, F_BODY_B, 162, 206, tr(L, S::NeedHelp));
+  cv.g.drawFastHLine(40, 220, kW - 80, gInk);
+  drawText(cv, F_MED_B, kW / 2, 248, tr(L, S::NotLive), Align::Center);
 }
 
 void drawMessage(Canvas& cv, const MessageScreen& s) {
