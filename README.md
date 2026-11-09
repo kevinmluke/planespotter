@@ -130,6 +130,9 @@ display's MAC address so IT can register it.
    ([docs/quickstart/quickstart.pdf](docs/quickstart/quickstart.pdf): A6,
    single-sided).
 
+A comic-book guide to building, setting up, using and updating the display is in
+[docs/comic/index.html](docs/comic/index.html). Open it in a browser.
+
 ---
 
 ## Where the data comes from

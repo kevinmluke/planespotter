@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>
+html, body { margin: 0; }:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
+</head><body>
+<title>PlaneSpotter Comics #1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,400;0,700;1,700&display=swap">
+<style>
+/* Layout: a printed comic book on a night sky. Each chapter is a white page of
+   bordered panels on a 6-column grid that collapses to one column on phones. */
+:root {
+  --sky: #13204f;        /* page background: night sky */
+  --sky-dot: #2a3d86;
+  --paper: #ffffff;      /* panel paper */
+  --ink: #121212;        /* line art and lettering */
+  --cap: #ffd83a;        /* caption boxes */
+  --pow: #e8352b;        /* sound effects, warnings */
+  --cyan: #1fa3d6;       /* sky panels, links */
+  --mint: #4fc28a;       /* "it worked" */
+  --halftone-c: #bfe6f6;
+  --halftone-y: #fff1a8;
+  --halftone-r: #ffc9c2;
+  --muted: #4a4f63;
+  --display: "Bangers", Impact, "Arial Black", sans-serif;
+  --letter: "Comic Neue", "Comic Sans MS", "Chalkboard SE", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  background-color: var(--sky);
+  background-image: radial-gradient(var(--sky-dot) 1.2px, transparent 1.3px);
+  background-size: 18px 18px;
+  color: var(--ink);
+  font-family: var(--letter);
+  font-size: 17px;
+  line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.book { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px; }
+
+/* ---------- Cover ---------- */
+.cover {
+  background: var(--paper);
+  border: 5px solid var(--ink);
+  box-shadow: 10px 10px 0 rgba(0,0,0,.45);
+  overflow: hidden;
+}
+.mast {
+  display: flex; flex-wrap: wrap; align-items: stretch; justify-content: space-between;
+  border-bottom: 5px solid var(--ink);
+  background: var(--pow);
+}
+.mast h1 {
+  margin: 0; padding: 10px 18px 4px;
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(46px, 11vw, 112px); line-height: .9; letter-spacing: .02em;
+  color: var(--cap);
+  -webkit-text-stroke: 3px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 5px 5px 0 var(--ink);
+  text-wrap: balance;
+}
+.mast h1 small { display: block; font-size: .42em; color: var(--paper); letter-spacing: .12em; }
+.issue {
+  display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2px;
+  padding: 10px 18px; background: var(--paper); border-left: 5px solid var(--ink);
+  font-family: var(--display); font-size: 22px; letter-spacing: .06em; text-align: center; min-width: 120px;
+}
+.issue b { font-size: 46px; line-height: 1; font-weight: 400; }
+.cover-art {
+  position: relative;
+  padding: 36px clamp(16px, 5vw, 64px) 30px;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 60%, var(--halftone-y) 0deg 9deg, var(--paper) 9deg 18deg);
+  display: flex; flex-direction: column; align-items: center; gap: 22px;
+}
+.cover-art .device { width: min(760px, 100%); transform: rotate(-2deg); }
+.tagline {
+  font-family: var(--display); font-size: clamp(26px, 5vw, 44px); letter-spacing: .04em; line-height: 1;
+  background: var(--cap); border: 4px solid var(--ink); padding: 8px 16px; transform: rotate(1.5deg);
+  box-shadow: 5px 5px 0 var(--ink); text-align: center;
+}
+.cover .sfx.big { position: absolute; top: 10px; right: 4%; font-size: clamp(34px, 7vw, 72px); transform: rotate(10deg); }
+.blurbs {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  border-top: 5px solid var(--ink);
+}
+.blurbs a {
+  display: flex; flex-direction: column; gap: 4px; padding: 14px 16px;
+  color: var(--ink); text-decoration: none; border-right: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
+  background: var(--paper);
+}
+.blurbs a:hover { background: var(--halftone-c); }
+.blurbs a:focus-visible { outline: 4px solid var(--cyan); outline-offset: -6px; }
+.blurbs .part { font-family: var(--display); font-size: 30px; line-height: 1; letter-spacing: .03em; }
+.blurbs .who { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+
+/* ---------- Chapter pages ---------- */
+.page {
+  background: var(--paper);
+  border: 5px solid var(--ink);
+  box-shadow: 10px 10px 0 rgba(0,0,0,.45);
+  padding: 14px;
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px;
+  scroll-margin-top: 16px;
+}
+.chapter {
+  grid-column: 1 / -1;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px;
+  padding: 10px 16px; background: var(--ink); color: var(--paper);
+}
+.chapter h2 {
+  margin: 0; font-family: var(--display); font-weight: 400; letter-spacing: .04em;
+  font-size: clamp(32px, 6vw, 54px); line-height: 1; color: var(--cap); text-wrap: balance;
+}
+.chapter h2 span { color: var(--paper); }
+.who-tag {
+  font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+  border: 2px solid var(--paper); padding: 4px 10px; border-radius: 99px;
+}
+
+.panel {
+  position: relative; min-width: 0;
+  border: 4px solid var(--ink);
+  background: var(--paper);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.s6 { grid-column: span 6; } .s4 { grid-column: span 4; } .s3 { grid-column: span 3; } .s2 { grid-column: span 2; }
+@media (max-width: 760px) {
+  .s4, .s3, .s2 { grid-column: span 6; }
+  .page { padding: 10px; gap: 10px; }
+}
+@media (min-width: 761px) and (max-width: 960px) {
+  .s2 { grid-column: span 3; }
+}
+.dots-c { background: radial-gradient(var(--halftone-c) 2.4px, transparent 2.6px) 0 0 / 12px 12px, var(--paper); }
+.dots-y { background: radial-gradient(var(--halftone-y) 2.6px, transparent 2.8px) 0 0 / 12px 12px, var(--paper); }
+.dots-r { background: radial-gradient(var(--halftone-r) 2.6px, transparent 2.8px) 0 0 / 12px 12px, var(--paper); }
+.night { background: radial-gradient(#33489a 1.4px, transparent 1.6px) 0 0 / 16px 16px, var(--sky); color: var(--paper); }
+.night .note { color: #dfe6ff; }
+
+/* Lettering */
+.cap {
+  align-self: flex-start;
+  background: var(--cap); border: 3px solid var(--ink);
+  padding: 6px 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; font-size: 15px; line-height: 1.3;
+  box-shadow: 3px 3px 0 var(--ink); max-width: 100%;
+}
+.cap.num { display: flex; align-items: center; gap: 8px; }
+.cap.num b {
+  display: inline-grid; place-items: center; width: 28px; height: 28px; flex: none;
+  background: var(--ink); color: var(--cap); border-radius: 50%; font-family: var(--display); font-weight: 400; font-size: 18px;
+}
+.balloon {
+  position: relative; align-self: flex-start;
+  background: var(--paper); color: var(--ink);
+  border: 3px solid var(--ink); border-radius: 22px;
+  padding: 10px 16px; font-weight: 700; text-transform: uppercase; font-size: 15.5px; line-height: 1.3;
+  max-width: 100%;
+}
+.balloon::after {
+  content: ""; position: absolute; left: 28px; bottom: -17px;
+  border: 9px solid transparent; border-top: 14px solid var(--ink); border-bottom: 0;
+}
+.balloon::before {
+  content: ""; position: absolute; left: 31px; bottom: -10px; z-index: 1;
+  border: 6px solid transparent; border-top: 10px solid var(--paper); border-bottom: 0;
+}
+.balloon.right { align-self: flex-end; }
+.balloon.right::after { left: auto; right: 28px; }
+.balloon.right::before { left: auto; right: 31px; }
+.balloon.up::after { bottom: auto; top: -17px; border-top: 0; border-bottom: 14px solid var(--ink); }
+.balloon.up::before { bottom: auto; top: -10px; border-top: 0; border-bottom: 10px solid var(--paper); }
+.balloon.shout { border-radius: 6px; background: var(--cap); }
+.balloon.shout::before { border-top-color: var(--cap); }
+.sfx {
+  font-family: var(--display); font-weight: 400; letter-spacing: .04em; line-height: 1;
+  color: var(--pow); -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill;
+  text-shadow: 3px 3px 0 var(--ink); font-size: 44px; pointer-events: none;
+}
+.sfx.abs { position: absolute; z-index: 2; }
+.sfx.blue { color: var(--cyan); }
+.sfx.yellow { color: var(--cap); }
+.sfx.green { color: var(--mint); }
+.note { margin: 0; font-size: 16px; }
+.note b { font-weight: 700; }
+.small { font-size: 14px; color: var(--muted); margin: 0; }
+ul.ticks, ol.steps { margin: 0; padding-left: 1.25em; display: flex; flex-direction: column; gap: 4px; }
+ul.ticks li::marker { content: "✈  "; color: var(--cyan); }
+.warn {
+  border: 3px dashed var(--pow); background: var(--paper); padding: 10px 12px; font-size: 15px;
+}
+.warn b { color: var(--pow); text-transform: uppercase; letter-spacing: .04em; }
+
+/* The device: a sparkle-black wedge with the e-paper behind a bezel */
+.device {
+  width: 100%; max-width: 100%;
+  background:
+    radial-gradient(#6b6b78 .8px, transparent 1px) 0 0 / 7px 7px,
+    radial-gradient(#45454f .8px, transparent 1px) 3px 4px / 9px 9px,
+    #1c1c22;
+  border: 4px solid var(--ink);
+  border-radius: 12px 12px 6px 6px;
+  padding: 3.2% 3.6% 5%;
+  box-shadow: 0 6px 0 #0b0b0e, 6px 10px 0 rgba(0,0,0,.25);
+}
+.device .screen { overflow: hidden; border: 2px solid #0b0b0e; background: #e8e8e8; }
+.device img { display: block; width: 103%; max-width: none; margin: -1.5%; }
+.device.small { border-width: 3px; border-radius: 8px 8px 4px 4px; }
+
+/* Parts lineup */
+.parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.part {
+  border: 3px solid var(--ink); background: var(--paper); padding: 8px; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center;
+}
+.part svg { width: 100%; height: 70px; }
+.part b { font-size: 15px; line-height: 1.2; }
+.part span { font-size: 13px; color: var(--muted); line-height: 1.25; }
+
+/* Wiring */
+.wires { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px 10px; align-items: center; font-weight: 700; font-size: 15px; }
+.wires .pin { border: 3px solid var(--ink); padding: 4px 8px; background: var(--paper); text-align: center; }
+.wires .wire { height: 6px; border: 2px solid var(--ink); border-radius: 4px; min-width: 70px; }
+.w1 { background: #9b59d0; } .w2 { background: #f28c28; } .w3 { background: #f5d330; } .w4 { background: #3b82f6; }
+.w5 { background: #22a35a; } .w6 { background: #ffffff; } .w7 { background: #e8352b; } .w8 { background: #121212; } .w9 { background: #8a8a8a; }
+
+/* Code */
+.term {
+  background: #0f1426; color: #d7f5df; border: 3px solid var(--ink); border-radius: 8px;
+  padding: 10px 12px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px;
+  display: flex; align-items: center; gap: 10px; justify-content: space-between;
+}
+.term code { overflow-x: auto; white-space: pre; min-width: 0; }
+.term code::before { content: "$ "; color: #7f8bb8; }
+.copy {
+  flex: none; font-family: var(--letter); font-weight: 700; font-size: 13px; text-transform: uppercase;
+  background: var(--cap); color: var(--ink); border: 2px solid var(--ink); border-radius: 6px; padding: 4px 10px; cursor: pointer;
+}
+.copy:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+
+/* Button trio */
+.press { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.btn-art { width: 120px; height: 90px; }
+.timer {
+  font-family: var(--display); font-size: 34px; line-height: 1; letter-spacing: .04em;
+  background: var(--ink); color: var(--cap); padding: 4px 12px; border-radius: 8px;
+}
+
+/* Callouts on the main screen */
+.annot { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.annot div { border-left: 6px solid var(--cyan); padding: 4px 10px; font-size: 15px; }
+.annot b { display: block; font-size: 14px; text-transform: uppercase; letter-spacing: .05em; }
+
+.badges { display: flex; flex-direction: column; gap: 10px; }
+.badge-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.badge {
+  font-weight: 700; font-size: 15px; padding: 3px 12px; border-radius: 99px; border: 3px solid var(--ink); white-space: nowrap;
+}
+.badge.live { background: var(--ink); color: var(--paper); }
+.badge.delayed { background: var(--paper); }
+.badge.offline {
+  border-radius: 4px;
+  background: repeating-linear-gradient(45deg, var(--ink) 0 5px, var(--paper) 5px 10px);
+  color: var(--ink);
+}
+.badge.offline span { background: var(--paper); padding: 0 6px; }
+
+.villains { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.villain { border: 3px solid var(--ink); padding: 10px 12px; background: var(--paper); display: flex; flex-direction: column; gap: 6px; }
+.villain h4 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 26px; letter-spacing: .03em; line-height: 1; color: var(--pow); }
+.villain p { margin: 0; font-size: 15px; }
+.villain .fix { font-weight: 700; }
+.villain .fix::before { content: "FIX: "; color: var(--mint); }
+
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px 14px; margin: 0; padding: 0; list-style: none; font-size: 15px; }
+.opts li { border-bottom: 2px dotted var(--ink); padding: 3px 0; }
+.opts b { font-weight: 700; }
+
+.end {
+  background: var(--cap); border: 5px solid var(--ink); box-shadow: 10px 10px 0 rgba(0,0,0,.45);
+  padding: 26px 18px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+}
+.end h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(42px, 9vw, 84px); line-height: .95; letter-spacing: .04em; text-wrap: balance; }
+.end p { margin: 0; max-width: 62ch; }
+
+figure { margin: 0; }
+figcaption { font-size: 14px; color: var(--muted); }
+img.line-art { width: 100%; height: auto; background: var(--paper); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .cover-art .device { transition: transform .3s ease; }
+  .cover-art:hover .device { transform: rotate(0deg) scale(1.01); }
+}
+</style>
+
+<div class="book">
+
+<!-- ================= COVER ================= -->
+<header class="cover">
+  <div class="mast">
+    <h1>PlaneSpotter<small>Comics · The Owner's Manual</small></h1>
+    <div class="issue"><span>No.</span><b>1</b><span>Free gift!</span></div>
+  </div>
+  <div class="cover-art">
+    <div class="sfx big yellow" aria-hidden="true">WHOOOSH!</div>
+    <div class="device"><div class="screen"><img src="../previews/02_rare_en.png" alt="The display showing a rare aircraft takeover: an Airbus BelugaXL overhead"></div></div>
+    <div class="tagline">The sky above your desk, live!</div>
+  </div>
+  <nav class="blurbs" aria-label="Chapters">
+    <a href="#build"><span class="part">Part 1: The Build</span><span class="who">For the builder</span><span>Print it, wire it, put it together.</span></a>
+    <a href="#flash"><span class="part">Part 2: Power Up!</span><span class="who">For the builder</span><span>Load the software and get it ready to give.</span></a>
+    <a href="#setup"><span class="part">Part 3: First Flight</span><span class="who">For the new owner</span><span>Plug in, scan, done in 2 minutes.</span></a>
+    <a href="#use"><span class="part">Part 4: Eyes on the Sky</span><span class="who">For the owner</span><span>What every screen means, and the one button.</span></a>
+    <a href="#updates"><span class="part">Part 5: Upgrades</span><span class="who">Owner &amp; builder</span><span>How new features arrive by themselves.</span></a>
+  </nav>
+</header>
+
+<!-- ================= PART 1: BUILD ================= -->
+<section class="page" id="build" aria-labelledby="h-build">
+  <div class="chapter"><h2 id="h-build">Part 1: <span>The Build</span></h2><span class="who-tag">For the builder</span></div>
+
+  <div class="panel s6 dots-y">
+    <div class="cap">Every great machine starts with a pile of parts…</div>
+    <div class="parts">
+      <div class="part">
+        <svg viewBox="0 0 160 70" aria-hidden="true"><rect x="10" y="12" width="140" height="46" rx="4" fill="#1c1c22" stroke="#121212" stroke-width="3"/><g fill="#d9b44a"><rect x="18" y="14" width="124" height="5"/><rect x="18" y="51" width="124" height="5"/></g><rect x="40" y="25" width="34" height="20" fill="#9aa0a6" stroke="#121212" stroke-width="2"/><rect x="132" y="28" width="16" height="14" rx="3" fill="#c9ccd1" stroke="#121212" stroke-width="2"/></svg>
+        <b>ESP32-S3-DevKitC-1 N16R8</b><span>The brain. Must be the 16 MB flash / 8 MB PSRAM version.</span>
+      </div>
+      <div class="part">
+        <svg viewBox="0 0 160 70" aria-hidden="true"><rect x="4" y="18" width="140" height="34" rx="2" fill="#e8e8e8" stroke="#121212" stroke-width="3"/><rect x="10" y="23" width="128" height="24" fill="#f6f6f6" stroke="#9a9a9a" stroke-width="1"/><path d="M144 28 h12 v14 h-12" fill="#d9a441" stroke="#121212" stroke-width="2"/></svg>
+        <b>Good Display GDEY0579T93</b><span>5.79" black-and-white e-paper, 792 × 272.</span>
+      </div>
+      <div class="part">
+        <svg viewBox="0 0 160 70" aria-hidden="true"><rect x="40" y="12" width="80" height="46" rx="3" fill="#2a6f3c" stroke="#121212" stroke-width="3"/><rect x="50" y="18" width="40" height="8" fill="#e6e6e6" stroke="#121212" stroke-width="1.5"/><g fill="#d9b44a"><circle cx="54" cy="48" r="3"/><circle cx="64" cy="48" r="3"/><circle cx="74" cy="48" r="3"/><circle cx="84" cy="48" r="3"/><circle cx="94" cy="48" r="3"/><circle cx="104" cy="48" r="3"/></g></svg>
+        <b>DESPI-C579 adapter</b><span>Made for this panel. The generic DESPI-C02 won't work.</span>
+      </div>
+      <div class="part">
+        <svg viewBox="0 0 160 70" aria-hidden="true"><rect x="58" y="16" width="44" height="40" rx="3" fill="#2b2b2b" stroke="#121212" stroke-width="3"/><circle cx="80" cy="36" r="11" fill="#e8352b" stroke="#121212" stroke-width="3"/><g stroke="#8a8a8a" stroke-width="3"><line x1="62" y1="56" x2="62" y2="66"/><line x1="98" y1="56" x2="98" y2="66"/></g></svg>
+        <b>6 × 6 mm push button</b><span>Plus two short wires to GPIO 0 and GND.</span>
+      </div>
+      <div class="part">
+        <svg viewBox="0 0 160 70" aria-hidden="true"><g fill="#c9ccd1" stroke="#121212" stroke-width="2"><rect x="30" y="20" width="16" height="6" rx="2"/><rect x="35" y="26" width="6" height="30"/><rect x="62" y="20" width="16" height="6" rx="2"/><rect x="67" y="26" width="6" height="24"/></g><g fill="#121212"><rect x="96" y="22" width="16" height="10" rx="5"/><rect x="118" y="22" width="16" height="10" rx="5"/><rect x="96" y="40" width="16" height="10" rx="5"/><rect x="118" y="40" width="16" height="10" rx="5"/></g></svg>
+        <b>Screws &amp; feet</b><span>2 × M2.5 × 10 mm, 4 × M2.5 × 8 mm, 4 rubber feet, double-sided tape.</span>
+      </div>
+      <div class="part">
+        <svg viewBox="0 0 160 70" aria-hidden="true"><path d="M20 50 C 60 10, 100 70, 130 30" fill="none" stroke="#121212" stroke-width="7"/><path d="M20 50 C 60 10, 100 70, 130 30" fill="none" stroke="#f6f6f6" stroke-width="3"/><rect x="126" y="20" width="22" height="16" rx="4" fill="#c9ccd1" stroke="#121212" stroke-width="3"/><rect x="6" y="44" width="18" height="14" rx="3" fill="#c9ccd1" stroke="#121212" stroke-width="3"/></svg>
+        <b>USB-C cable + charger</b><span>Any 5 V phone charger. It uses about 80 mA.</span>
+      </div>
+    </div>
+    <div class="balloon right">…plus jumper wires and your 3D printer!</div>
+  </div>
+
+  <div class="panel s3 dots-c">
+    <div class="cap">Meanwhile, at the 3D printer…</div>
+    <div class="sfx abs blue" style="right:14px; top:10px; transform:rotate(8deg); font-size:36px" aria-hidden="true">BZZZT!</div>
+    <p class="note">Print the five parts from <b>enclosure/stl/</b> in PLA or PETG: 0.2 mm layers, 3 walls, 15–20% infill.</p>
+    <ul class="ticks">
+      <li><b>bezel</b>: face down, no supports</li>
+      <li><b>backer</b>: flat, no supports</li>
+      <li><b>body</b>: on its side, supports only for the 2 screw tabs and the button tube</li>
+      <li><b>base</b>: flat, no supports</li>
+      <li><b>button cap</b>: top down, no supports</li>
+    </ul>
+    <div class="balloon shout">The body stands 176 mm tall. Your printer needs at least 180 mm of height!</div>
+    <p class="small">Want the sparkly look? Use black "galaxy" PLA, or turn on fuzzy skin for the outer walls.</p>
+  </div>
+
+  <div class="panel s3 dots-r">
+    <div class="cap">Builder's warning!</div>
+    <div class="sfx abs" style="right:12px; top:8px; transform:rotate(-6deg); font-size:40px" aria-hidden="true">HOLD IT!</div>
+    <p class="note" style="margin-top:28px">This case hasn't been test-printed yet. On your <b>first</b> unit, check two things before printing the rest:</p>
+    <ol class="steps">
+      <li><b>Board fit.</b> The cradle expects a 70 × 29 mm board. Measure yours.</li>
+      <li><b>Screen window.</b> Print the bezel first, lay the panel in, and check no pixels are hidden.</li>
+    </ol>
+    <p class="note">If either is off, change the matching number at the top of <b>enclosure/enclosure.py</b> and regenerate the files.</p>
+    <div class="warn"><b>Also new:</b> the software hasn't run on a real panel yet. Expect to fine-tune on the first boot.</div>
+  </div>
+
+  <div class="panel s4">
+    <div class="cap">The wiring: eight wires, no soldering on the screen</div>
+    <div class="wires" role="table" aria-label="Adapter to ESP32 wiring">
+      <div class="pin" role="cell">BUSY</div><div class="wire w1" role="presentation"></div><div class="pin" role="cell">GPIO 7</div>
+      <div class="pin" role="cell">RES</div><div class="wire w2" role="presentation"></div><div class="pin" role="cell">GPIO 8</div>
+      <div class="pin" role="cell">D/C</div><div class="wire w3" role="presentation"></div><div class="pin" role="cell">GPIO 9</div>
+      <div class="pin" role="cell">CS</div><div class="wire w4" role="presentation"></div><div class="pin" role="cell">GPIO 10</div>
+      <div class="pin" role="cell">SDI (MOSI)</div><div class="wire w5" role="presentation"></div><div class="pin" role="cell">GPIO 11</div>
+      <div class="pin" role="cell">SCK</div><div class="wire w6" role="presentation"></div><div class="pin" role="cell">GPIO 12</div>
+      <div class="pin" role="cell">3.3V</div><div class="wire w7" role="presentation"></div><div class="pin" role="cell">3V3</div>
+      <div class="pin" role="cell">GND</div><div class="wire w8" role="presentation"></div><div class="pin" role="cell">GND</div>
+      <div class="pin" role="cell">Button</div><div class="wire w9" role="presentation"></div><div class="pin" role="cell">GPIO 0 + GND</div>
+    </div>
+    <p class="small">Left: the DESPI-C579 adapter. Right: the ESP32-S3 board. Wire colours are up to you.</p>
+  </div>
+
+  <div class="panel s2 dots-y">
+    <div class="cap">The plan, exploded</div>
+    <figure><img class="line-art" src="../../enclosure/exploded.svg" alt="Exploded view of the printed case parts and the screen"></figure>
+    <div class="balloon up">Five parts. Six screws. Let's go!</div>
+  </div>
+
+  <div class="panel s2">
+    <div class="cap num"><b>1</b>The button</div>
+    <p class="note">Drop the <b>button cap</b> into the hole in the top, from inside. Push the push button up into the tube until it touches the cap. Fix it with a dab of hot glue, then connect its two wires.</p>
+    <div class="sfx" style="align-self:flex-end; transform:rotate(-6deg)" aria-hidden="true">CLICK!</div>
+  </div>
+  <div class="panel s2">
+    <div class="cap num"><b>2</b>The brain</div>
+    <p class="note">Lay the ESP32 board <b>upside down</b> (pins up) in the base cradle, USB-C end at the back. Hold it with a strip of double-sided tape.</p>
+  </div>
+  <div class="panel s2">
+    <div class="cap num"><b>3</b>The screen</div>
+    <p class="note">Lay the bezel face down. Put the glass in its pocket, <b>screen side down</b>, ribbon cable in its cutout on the right (seen from the front). Lay the backer on top about 6 mm low, clear of the two hooks, then slide it up until it stops under them.</p>
+  </div>
+  <div class="panel s2">
+    <div class="cap num"><b>4</b>The adapter</div>
+    <p class="note">Fold the ribbon gently around the backer's right edge, plug it into the DESPI-C579, and stick the adapter to the back of the backer near that edge. Connect the jumper wires as shown above.</p>
+  </div>
+  <div class="panel s2">
+    <div class="cap num"><b>5</b>Bezel into body</div>
+    <p class="note">Hook the top of the bezel under the body's top edge, swing the bottom in, and fit the <b>2 × 10 mm</b> screws from inside through the bottom tabs.</p>
+  </div>
+  <div class="panel s2">
+    <div class="cap num"><b>6</b>Close it up</div>
+    <p class="note">Slide the base in from below with the USB-C port lined up with the opening at the back. Fit the <b>4 × 8 mm</b> screws and stick on the feet.</p>
+    <div class="sfx green" style="align-self:flex-end; transform:rotate(5deg)" aria-hidden="true">DONE!</div>
+  </div>
+</section>
+
+<!-- ================= PART 2: FLASH ================= -->
+<section class="page" id="flash" aria-labelledby="h-flash">
+  <div class="chapter"><h2 id="h-flash">Part 2: <span>Power Up!</span></h2><span class="who-tag">For the builder</span></div>
+
+  <div class="panel s4 dots-c">
+    <div class="cap">Our hero needs a brain transplant. Plug the board into your computer.</div>
+    <p class="note">In the PlaneSpotter folder, install the build tool once:</p>
+    <div class="term"><code>python3 -m pip install platformio</code><button class="copy" type="button" id="copy-pio">Copy</button></div>
+    <p class="note">Then build and load the software onto the board:</p>
+    <div class="term"><code>pio run -t upload</code><button class="copy" type="button" id="copy-upload">Copy</button></div>
+    <div class="balloon">The first build downloads a few hundred MB of tools. Grab a coffee!</div>
+    <p class="small">Updates come from the GitHub project named in <b>include/config.h</b>. It's already set, so every unit you flash will find its updates.</p>
+  </div>
+
+  <div class="panel s2 night">
+    <div class="sfx abs yellow" style="left:12px; top:8px; transform:rotate(-8deg)" aria-hidden="true">IT'S ALIVE!</div>
+    <div style="height:40px"></div>
+    <div class="device small"><div class="screen"><img src="../previews/08_setup.png" alt="The setup screen: a QR code and 'Scan with your phone's camera'"></div></div>
+    <p class="note">The screen wakes up with a QR code. That means it worked.</p>
+  </div>
+
+  <div class="panel s3">
+    <div class="cap">Test flight</div>
+    <p class="note">Set it up on your own Wi-Fi (see Part 3) and watch it for a day. Planes showing? Times right? Great.</p>
+    <div class="balloon right">Every unit gets a test flight before it leaves the hangar.</div>
+  </div>
+
+  <div class="panel s3 dots-r">
+    <div class="cap">Wipe it, wrap it</div>
+    <p class="note"><b>Hold the button for 10 seconds</b> to erase your Wi-Fi and town. A warning appears at 6 seconds; keep holding. It restarts on the setup screen, ready for its new owner.</p>
+    <p class="note">Unplug it and pack it with the printed quick-start card (<b>docs/quickstart/quickstart.pdf</b>).</p>
+    <div class="sfx" style="align-self:flex-end; transform:rotate(-4deg)" aria-hidden="true">WHOOSH!</div>
+  </div>
+</section>
+
+<!-- ================= PART 3: SETUP ================= -->
+<section class="page" id="setup" aria-labelledby="h-setup">
+  <div class="chapter"><h2 id="h-setup">Part 3: <span>First Flight</span></h2><span class="who-tag">For the new owner</span></div>
+
+  <div class="panel s2 dots-y">
+    <div class="cap num"><b>1</b>Plug it in</div>
+    <svg viewBox="0 0 220 120" aria-hidden="true" style="width:100%;height:auto">
+      <rect x="8" y="30" width="96" height="60" rx="8" fill="#f6f6f6" stroke="#121212" stroke-width="4"/>
+      <rect x="40" y="10" width="34" height="22" fill="#c9ccd1" stroke="#121212" stroke-width="4"/>
+      <path d="M104 60 C 140 60, 140 100, 180 96" fill="none" stroke="#121212" stroke-width="8"/>
+      <path d="M104 60 C 140 60, 140 100, 180 96" fill="none" stroke="#f6f6f6" stroke-width="3"/>
+      <rect x="178" y="86" width="32" height="20" rx="5" fill="#c9ccd1" stroke="#121212" stroke-width="4"/>
+      <path d="M44 48 l10 -10 l-2 10 l10 0 l-10 14 l2 -10 l-10 0 z" fill="#ffd83a" stroke="#121212" stroke-width="2"/>
+    </svg>
+    <p class="note">Use the USB-C cable. Any phone charger works.</p>
+  </div>
+
+  <div class="panel s4 dots-c">
+    <div class="cap num"><b>2</b>Scan the code on the screen</div>
+    <div class="device"><div class="screen"><img src="../previews/08_setup.png" alt="Setup screen with a QR code, and the Wi-Fi name and password written below it"></div></div>
+    <div class="balloon">Point your phone's camera at my QR code!</div>
+    <p class="note">Your phone joins the display's own little Wi-Fi network, and the setup page opens by itself. No app needed. If the page doesn't open, join the Wi-Fi shown at the bottom of the screen with the password next to it.</p>
+  </div>
+
+  <div class="panel s3">
+    <div class="cap num"><b>3</b>Pick your Wi-Fi, type your town</div>
+    <svg viewBox="0 0 240 200" aria-hidden="true" style="width:100%;max-width:300px;height:auto;align-self:center">
+      <rect x="70" y="4" width="104" height="190" rx="14" fill="#121212"/>
+      <rect x="78" y="16" width="88" height="166" rx="6" fill="#ffffff"/>
+      <rect x="86" y="24" width="56" height="8" rx="2" fill="#121212"/>
+      <rect x="86" y="42" width="72" height="14" rx="3" fill="#bfe6f6" stroke="#121212" stroke-width="1.5"/>
+      <rect x="86" y="60" width="72" height="14" rx="3" fill="#ffffff" stroke="#121212" stroke-width="1.5"/>
+      <rect x="86" y="78" width="72" height="14" rx="3" fill="#ffffff" stroke="#121212" stroke-width="1.5"/>
+      <rect x="86" y="104" width="72" height="14" rx="3" fill="#ffffff" stroke="#121212" stroke-width="1.5"/>
+      <rect x="90" y="109" width="34" height="4" rx="1" fill="#8a8a8a"/>
+      <rect x="86" y="160" width="72" height="14" rx="4" fill="#121212"/>
+      <rect x="110" y="165" width="24" height="4" rx="1" fill="#ffffff"/>
+      <path d="M190 160 l26 -18" stroke="#121212" stroke-width="4"/>
+      <circle cx="222" cy="138" r="10" fill="#ffd83a" stroke="#121212" stroke-width="3"/>
+    </svg>
+    <ul class="ticks">
+      <li>Tap your home Wi-Fi and type its password.</li>
+      <li>Start typing your town and pick it from the list. This also sets the time zone.</li>
+      <li>Press <b>Save</b>. That's it!</li>
+    </ul>
+  </div>
+
+  <div class="panel s3 dots-y">
+    <div class="sfx abs green" style="right:12px; top:8px; transform:rotate(6deg)" aria-hidden="true">CONNECTED!</div>
+    <div class="cap num"><b>4</b>Liftoff</div>
+    <div class="device small" style="margin-top:20px"><div class="screen"><img src="../previews/08_setup_ok.png" alt="Setup screen saying Connected to the chosen network"></div></div>
+    <p class="note">The display checks that it can reach the internet, then tells you on the phone and on the screen. Shortly after, the planes appear.</p>
+  </div>
+
+  <div class="panel s6 dots-r">
+    <div class="cap">Uh-oh! The Wi-Fi villains strike!</div>
+    <div class="villains">
+      <div class="villain"><h4>Wrong Password</h4><p>The screen says the password didn't work.</p><p class="fix">Scan again and retype it carefully.</p></div>
+      <div class="villain"><h4>The 5 GHz Ghost</h4><p>Your network isn't in the list, or "network not found". The display only sees 2.4 GHz Wi-Fi.</p><p class="fix">Pick your router's 2.4 GHz network (it often has the same name), or use a phone hotspot.</p></div>
+      <div class="villain"><h4>The Sign-in Page</h4><p>Hotel-style guest Wi-Fi that wants you to click "Accept" on a web page.</p><p class="fix">Use home Wi-Fi or a phone hotspot instead.</p></div>
+      <div class="villain"><h4>The Work Login</h4><p>Office Wi-Fi that asks for a username. It's not supported on purpose, so your work password never gets stored on a gadget.</p><p class="fix">Use home Wi-Fi, a guest network without a sign-in page, or a phone hotspot.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PART 4: USE ================= -->
+<section class="page" id="use" aria-labelledby="h-use">
+  <div class="chapter"><h2 id="h-use">Part 4: <span>Eyes on the Sky</span></h2><span class="who-tag">For the owner</span></div>
+
+  <div class="panel s6 dots-c">
+    <div class="cap">Our hero's main power: the closest plane, right now</div>
+    <div class="device"><div class="screen"><img src="../previews/01_aircraft_en.png" alt="Main screen: United UA1234, Airbus A320neo, San Francisco to New York, 23,450 ft, 474 mph, heading 288°, 7.7 mi away, with a radar of nearby aircraft"></div></div>
+    <div class="annot">
+      <div><b>Who</b>Flight number, airline, aircraft model, registration, and its side-view silhouette.</div>
+      <div><b>Where to</b>Where it came from, where it's going, and how far along it is.</div>
+      <div><b>How high &amp; fast</b>Altitude and climb rate, speed, heading, and how far away it is.</div>
+      <div><b>Radar</b>Everything else nearby. The circled plane is the one on screen.</div>
+    </div>
+  </div>
+
+  <div class="panel s3">
+    <div class="cap">Is it fresh? Check the badge!</div>
+    <div class="badges">
+      <div class="badge-row"><span class="badge live">● LIVE</span><span>The data is current.</span></div>
+      <div class="badge-row"><span class="badge delayed">DELAYED 40s</span><span>A few seconds behind. Still fine.</span></div>
+      <div class="badge-row"><span class="badge offline"><span>OFFLINE</span></span><span>A striped border fills the screen. Nothing shown is live, and it says why.</span></div>
+    </div>
+    <div class="balloon right">I'll never pretend old news is live!</div>
+  </div>
+
+  <div class="panel s3 dots-r">
+    <div class="cap">When the signal is lost…</div>
+    <div class="device small"><div class="screen"><img src="../previews/10_offline_en.png" alt="Offline screen: Wi-Fi disconnected, last data received at 8:51 PM, hold the button for 3 seconds to change Wi-Fi"></div></div>
+    <p class="note">It keeps retrying by itself. If your Wi-Fi changed, <b>hold the button for 3 seconds</b> to pick a new one.</p>
+  </div>
+
+  <div class="panel s4 dots-y">
+    <div class="sfx abs" style="right:14px; top:10px; transform:rotate(7deg); font-size:52px" aria-hidden="true">WHOA!</div>
+    <div class="cap">Rare bird alert!</div>
+    <div class="device"><div class="screen"><img src="../previews/02_rare_en.png" alt="Rare aircraft takeover: Airbus BelugaXL"></div></div>
+    <p class="note">Something unusual nearby (a Beluga, a giant An-124, a B-52, an Osprey, military jets) takes over the whole screen with a ★ banner.</p>
+  </div>
+  <div class="panel s2 dots-r">
+    <div class="cap">Emergency!</div>
+    <div class="device small"><div class="screen"><img src="../previews/04_emergency_en.png" alt="Emergency takeover screen for an aircraft squawking 7700"></div></div>
+    <p class="note">An aircraft declaring an emergency always wins the screen, whatever else is going on.</p>
+    <div class="sfx" style="align-self:center; font-size:48px" aria-hidden="true">7700!</div>
+  </div>
+
+  <div class="panel s3 night">
+    <div class="cap">Quiet skies? Space time!</div>
+    <div class="device small"><div class="screen"><img src="../previews/05_iss_map_en.png" alt="ISS map: the space station's position on a world map with day and night, plus the next visible pass"></div></div>
+    <p class="note">In Auto mode, when no planes are near, it shows the International Space Station live on a world map, with the next time you can see it.</p>
+  </div>
+  <div class="panel s3 night">
+    <div class="sfx abs yellow" style="right:12px; top:8px; transform:rotate(-6deg); font-size:38px" aria-hidden="true">LOOK UP!</div>
+    <div class="cap">10-minute warning</div>
+    <div class="device small" style="margin-top:14px"><div class="screen"><img src="../previews/06_iss_alert_en.png" alt="ISS alert: visible in 8 minutes, appears in the north-east, 28 degrees up"></div></div>
+    <p class="note">Ten minutes before the ISS crosses your sky (when it's actually visible), the display tells you where to look and how high it will go. Go outside!</p>
+  </div>
+
+  <div class="panel s2">
+    <div class="cap">The one button: Tap</div>
+    <div class="press">
+      <svg class="btn-art" viewBox="0 0 120 90" aria-hidden="true"><circle cx="60" cy="48" r="26" fill="#e8352b" stroke="#121212" stroke-width="4"/><path d="M60 4 v12 M30 14 l7 9 M90 14 l-7 9" stroke="#121212" stroke-width="4" stroke-linecap="round"/></svg>
+      <div class="timer">TAP</div>
+      <p class="note">Switch modes: <b>Auto</b> → <b>Aircraft</b> → <b>ISS</b>. Auto shows planes, and the ISS when it's quiet.</p>
+    </div>
+  </div>
+  <div class="panel s2 dots-y">
+    <div class="cap">The one button: Hold 3 s</div>
+    <div class="press">
+      <svg class="btn-art" viewBox="0 0 120 90" aria-hidden="true"><circle cx="60" cy="48" r="26" fill="#e8352b" stroke="#121212" stroke-width="4"/><circle cx="60" cy="48" r="38" fill="none" stroke="#121212" stroke-width="4" stroke-dasharray="6 6"/></svg>
+      <div class="timer">3 SEC</div>
+      <p class="note">Opens <b>Settings</b>: a new QR code to scan. Tap again to close.</p>
+    </div>
+  </div>
+  <div class="panel s2 dots-r">
+    <div class="cap">The one button: Hold 10 s</div>
+    <div class="press">
+      <svg class="btn-art" viewBox="0 0 120 90" aria-hidden="true"><circle cx="60" cy="48" r="26" fill="#e8352b" stroke="#121212" stroke-width="4"/><path d="M14 10 l92 76 M106 10 l-92 76" stroke="#121212" stroke-width="5" stroke-linecap="round"/></svg>
+      <div class="timer">10 SEC</div>
+      <p class="note"><b>Erases everything</b> and starts setup again. A warning shows at 6 seconds, so you can let go.</p>
+    </div>
+  </div>
+
+  <div class="panel s4">
+    <div class="cap">The settings page (hold 3 s, then scan)</div>
+    <ul class="opts">
+      <li><b>Wi-Fi</b> and <b>town</b></li>
+      <li><b>Theme</b>: light or dark</li>
+      <li><b>Units</b>: Imperial, Metric or Aviation</li>
+      <li><b>Clock</b>: 12-hour or 24-hour</li>
+      <li><b>Show</b>: aircraft, ISS, or both</li>
+      <li><b>Range</b> for the closest plane</li>
+      <li><b>Rare-aircraft</b> takeovers, from Never to Everything</li>
+      <li><b>ISS alerts</b> on or off</li>
+      <li><b>Automatic updates</b> and <b>Check for updates</b></li>
+    </ul>
+    <p class="small">The settings page closes when you tap the button, press "Close settings", or after 10 minutes of nothing.</p>
+  </div>
+  <div class="panel s2 night">
+    <div class="cap">Dark mode, activate!</div>
+    <div class="device small"><div class="screen"><img src="../previews/01_aircraft_en_dark.png" alt="The main screen in the dark theme: white on black"></div></div>
+    <p class="note">Prefer white on black? Pick <b>Dark</b> under Theme.</p>
+  </div>
+
+</section>
+
+<!-- ================= PART 5: UPDATES ================= -->
+<section class="page" id="updates" aria-labelledby="h-updates">
+  <div class="chapter"><h2 id="h-updates">Part 5: <span>Upgrades</span></h2><span class="who-tag">Owner &amp; builder</span></div>
+
+  <div class="panel s3 dots-c">
+    <div class="cap">For owners: you don't have to do anything</div>
+    <p class="note">Once a day the display checks for new software. If there is some, it downloads it, checks it's genuine, installs it and restarts.</p>
+    <div class="device small"><div class="screen"><img src="../previews/12_update_en.png" alt="Update screen: Updating to 1.1.0, please keep the display plugged in, with a progress bar"></div></div>
+    <div class="balloon">Please keep me plugged in while I update!</div>
+  </div>
+  <div class="panel s3 dots-y">
+    <div class="sfx abs green" style="right:12px; top:8px; transform:rotate(6deg)" aria-hidden="true">SAFE!</div>
+    <div class="cap">And if an update goes wrong?</div>
+    <p class="note" style="margin-top:22px">Afterwards the screen says <b>"Updated to 1.1.0"</b>. If the new version misbehaves, the display goes back to the old one by itself and says <b>"Update failed, back on 1.0.0"</b>. Nothing for you to fix.</p>
+    <p class="note">Want control? Settings has <b>Check for updates</b>, and you can turn automatic updates off.</p>
+  </div>
+
+  <div class="panel s4">
+    <div class="cap">For the builder: shipping a new version</div>
+    <ol class="steps">
+      <li>Bump the number in the <b>VERSION</b> file and commit it.</li>
+      <li>Publish a test release. This runs the tests first and refuses if you have uncommitted changes:
+        <div class="term" style="margin-top:6px"><code>python3 tools/release.py --notes "What changed"</code><button class="copy" type="button" id="copy-release">Copy</button></div>
+      </li>
+      <li>Load it onto <b>your own</b> display over USB (<b>pio run -t upload</b>) and live with it for a couple of days. A test release never goes to anyone else.</li>
+      <li>Happy? Send it to everyone. Every display picks it up within a day:
+        <div class="term" style="margin-top:6px"><code>python3 tools/release.py --promote</code><button class="copy" type="button" id="copy-promote">Copy</button></div>
+      </li>
+    </ol>
+  </div>
+  <div class="panel s2 dots-r">
+    <div class="sfx abs" style="right:10px; top:6px; transform:rotate(-8deg); font-size:38px" aria-hidden="true">DANGER!</div>
+    <div class="cap">Guard the secret key!</div>
+    <p class="note" style="margin-top:24px">Updates are signed with <b>keys/ota_private.pem</b> on your computer. The displays only accept updates signed with it.</p>
+    <div class="warn"><b>Back it up</b> somewhere offline (a USB stick in a drawer) and in a password manager. Lose it, and no display can ever be updated again.</div>
+  </div>
+</section>
+
+<!-- ================= BACK COVER ================= -->
+<footer class="end">
+  <h2>The End… now look up!</h2>
+  <p>Every plane on your screen is really up there. Next time it says one's close, step outside and wave.</p>
+  <p class="small" style="color:var(--ink)">Flight data: adsb.lol (ODbL), adsb.fi, adsbdb.com and hexdb.io. Space station orbit: CelesTrak. Towns: GeoNames (CC BY).</p>
+</footer>
+
+</div>
+
+<script>
+document.querySelectorAll(".copy").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var code = btn.parentElement.querySelector("code");
+    var text = code.textContent;
+    function done(label) {
+      btn.textContent = label;
+      setTimeout(function () { btn.textContent = "Copy"; }, 1600);
+    }
+    function selectIt() {
+      var r = document.createRange();
+      r.selectNodeContents(code);
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+      done("Selected");
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { done("Copied"); }, selectIt);
+    } catch (e) { selectIt(); }
+  });
+});
+</script>
+
+</body></html>
+</body>
+</html>

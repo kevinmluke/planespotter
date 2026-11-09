@@ -8,7 +8,7 @@ Onshape...) to enclosure/step/, and drawings (assembly_front/back.svg, exploded.
 
 Five parts, printed separately:
   bezel       front frame with the window; the panel drops into a pocket on its back
-  backer      plate behind the panel; holds it in the pocket, slot for the ribbon cable
+  backer      plate behind the panel; slides up under two hooks, the ribbon folds round its edge
   body        the wedge: side walls, top, back, USB-C opening, button guide
   base        bottom plate with a cradle for the ESP32-S3 board
   button_cap  plunger that presses the 6 mm tactile button from the top
@@ -36,11 +36,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PANEL_W, PANEL_H, PANEL_T = 150.92, 56.94, 1.0
 ACTIVE_W, ACTIVE_H = 139.00, 47.74
 # Where the active area sits on the glass: the ribbon cable leaves from the RIGHT
-# short edge (seen from the front) and that end has the wider border. Estimated
-# from the product photos; check against the datasheet or your panel and adjust.
-ACTIVE_LEFT_BORDER = 2.6          # glass left edge -> active area (right border = the rest)
-ACTIVE_BOTTOM_BORDER = 4.6        # glass bottom edge -> active area
-FPC_WIDTH = 24.0                  # ribbon cable width where it leaves the glass (with margin)
+# short edge (seen from the front) and that end has the wider border (9.12 mm).
+# Values from Good Display's mechanical drawing (GDEY0579T93 spec, rev 1.0, p. 5).
+ACTIVE_LEFT_BORDER = 2.80         # glass left edge -> active area (right border = the rest)
+ACTIVE_BOTTOM_BORDER = 4.60       # glass bottom edge -> active area (same at the top)
+FPC_WIDTH = 34.10 + 2 * 1.5       # ribbon is 34.10 mm wide where it leaves the glass (centred), plus margin
 
 WINDOW_MARGIN = 1.0               # window is this much larger than the active area, per side
 FIT = 0.25                        # clearance around the glass in its pocket, per side
@@ -88,7 +88,12 @@ BACKER_Y0, BACKER_Y1 = 3.5, FACE_H - 3.0
 TONGUE_X = 33.0                   # two T-shaped tongues, at +/- this x
 TONGUE_Y0 = 57.5                  # where the tongues start (face coordinates)
 NECK_HW, HEAD_HW = 13.0, 20.0     # half widths of the tongue neck and head
-HEAD_GAP = 0.15                   # clearance between backer and tongue heads
+HEAD_GAP = 0.40                   # clearance between backer and tongue heads (FDM tolerance)
+NECK_FIT = 0.50                   # clearance around the tongue necks in the backer notches
+EAR_W = 9.5                       # how far the screw ears reach in from the side walls
+# The backer stops short of the screw bosses, so it can slide up under the tongue heads.
+# The ears are wide enough to overlap and clamp its left and right edges.
+BACKER_HW = BODY_W / 2 - WALL - 3.25 - 2.7 - 0.6
 
 
 def box(x0, x1, y0, y1, z0, z1):
@@ -131,17 +136,14 @@ def make_bezel():
 
 
 def make_backer():
-    x_in = BODY_W / 2 - WALL - 0.4
-    plate = box(-x_in, x_in, BACKER_Y0, BACKER_Y1, -BACKER_T, 0)
-    for x, y in BOSSES:
-        plate -= cyl(x, y, -BACKER_T - 1, 1, 3.0)
+    # Narrower than the bezel: it ends inside the screw bosses, so nothing passes through
+    # it and it can be laid on the bezel below the tongue heads, then slid up under them.
+    # The ribbon cable folds around its right edge to the adapter on its back.
+    plate = box(-BACKER_HW, BACKER_HW, BACKER_Y0, BACKER_Y1, -BACKER_T, 0)
     # Notches for the bezel's tongue necks (the backer slides up under the tongue heads)
     for sx in (-1, 1):
         x = sx * TONGUE_X
-        plate -= box(x - NECK_HW - 0.3, x + NECK_HW + 0.3, TONGUE_Y0 - 0.3, FACE_H, -BACKER_T - 1, 1)
-    # Slot for the ribbon cable to fold behind the panel
-    edge = PANEL_X + PANEL_W / 2
-    plate -= box(edge - 3, edge + 5, PANEL_Y - FPC_WIDTH / 2 - 1, PANEL_Y + FPC_WIDTH / 2 + 1, -BACKER_T - 1, 1)
+        plate -= box(x - NECK_HW - NECK_FIT, x + NECK_HW + NECK_FIT, TONGUE_Y0 - NECK_FIT, FACE_H, -BACKER_T - 1, 1)
     return plate
 
 
@@ -177,7 +179,7 @@ def make_body():
     for x, y in BOSSES:
         side = 1 if x > 0 else -1
         x_wall = side * (BODY_W / 2 - WALL)
-        ear = F * box(min(x_wall, x_wall - side * 6.5), max(x_wall, x_wall - side * 6.5), y - 4.5, y + 4.5,
+        ear = F * box(min(x_wall, x_wall - side * EAR_W), max(x_wall, x_wall - side * EAR_W), y - 4.5, y + 4.5,
                       -BACKER_T - EAR_T, -BACKER_T)
         ear -= F * cyl(x, y, -BACKER_T - EAR_T - 1, 0, 1.45)  # M2.5 clearance
         body += ear
