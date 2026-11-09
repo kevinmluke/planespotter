@@ -85,11 +85,12 @@ BOSS_DY = 22.5
 # (screws up there could not be reached with a screwdriver).
 BOSSES = [(sx * BOSS_X, VC - BOSS_DY) for sx in (-1, 1)]
 BACKER_Y0, BACKER_Y1 = 3.5, FACE_H - 3.0
-TONGUE_X = 33.0                   # two T-shaped tongues, at +/- this x
-TONGUE_Y0 = 57.5                  # where the tongues start (face coordinates)
-NECK_HW, HEAD_HW = 13.0, 20.0     # half widths of the tongue neck and head
+TONGUE_X = 33.0                   # two hooks, centred at +/- this x
+TONGUE_Y0 = 57.5                  # where the hooks start (face coordinates)
+HEAD_HW = 17.0                    # half width of each hook's top
+POST_W = 6.0                      # each hook stands on two posts, one at each end of its top
 HEAD_GAP = 0.40                   # clearance between backer and tongue heads (FDM tolerance)
-NECK_FIT = 0.50                   # clearance around the tongue necks in the backer notches
+NECK_FIT = 0.50                   # clearance around the hook posts in the backer notches
 EAR_W = 9.5                       # how far the screw ears reach in from the side walls
 # The backer stops short of the screw bosses, so it can slide up under the tongue heads.
 # The ears are wide enough to overlap and clamp its left and right edges.
@@ -119,16 +120,27 @@ def make_bezel():
     ww, wh = ACTIVE_W + 2 * WINDOW_MARGIN, ACTIVE_H + 2 * WINDOW_MARGIN
     window = extrude(Plane.XY.offset(POCKET - 0.01) * Pos(0, VC) * Rectangle(ww, wh), amount=SKIN + 0.02, taper=-40)
     plate -= window
-    # Screw bosses behind the face (they pass through the backer and meet the body's ears)
+    # Screw bosses behind the face, just outside the backer (they meet the body's ears)
     for x, y in BOSSES:
         plate += cyl(x, y, -BACKER_T, 0.01, 2.7)
         plate -= cyl(x, y, -BACKER_T - 0.01, POCKET + SKIN - 0.8, 1.1)  # M2.5 self-tapping pilot
-    # Hooks: T-shaped tongues that slide under the body's top wall. Their top is cut
+    # Hooks that slide under the body's top wall. Their top is cut
     # horizontal, flush under the wall, so the bezel can't tip forward.
     under_wall = Location((0, 0, 0)) * box(-BODY_W, BODY_W, -50, 200, TOP_Z - WALL - 0.05, 300)
     for sx in (-1, 1):
         x = sx * TONGUE_X
-        tongue = box(x - NECK_HW, x + NECK_HW, TONGUE_Y0, FACE_H, -BACKER_T - HEAD_GAP, 0.01)
+        # A bridge on two posts: printed face down, the top spans between the posts, so it
+        # needs no supports. The backer slides in under the span, between the posts.
+        # The posts' feet reach over the top of the glass pocket; their underside there is
+        # cut at 45 degrees so it prints without supports too.
+        pocket_top = PANEL_Y + POCKET_H / 2
+        tongue = None
+        for px in (x - HEAD_HW, x + HEAD_HW - POST_W):
+            post = box(px, px + POST_W, TONGUE_Y0, FACE_H, -BACKER_T - HEAD_GAP, 0.01)
+            slope = Polygon((pocket_top, 0.02), (pocket_top - 10, -9.98), (pocket_top - 30, -9.98),
+                            (pocket_top - 30, 1), (pocket_top, 1), align=None)
+            post -= extrude(Plane.YZ.offset(px + POST_W / 2) * slope, amount=POST_W / 2 + 1, both=True)
+            tongue = post if tongue is None else tongue + post
         tongue += box(x - HEAD_HW, x + HEAD_HW, TONGUE_Y0, FACE_H, -BACKER_T - HEAD_GAP - 3.0, -BACKER_T - HEAD_GAP)
         tongue = F.inverse() * ((F * tongue) - under_wall)
         plate += tongue
@@ -140,10 +152,11 @@ def make_backer():
     # it and it can be laid on the bezel below the tongue heads, then slid up under them.
     # The ribbon cable folds around its right edge to the adapter on its back.
     plate = box(-BACKER_HW, BACKER_HW, BACKER_Y0, BACKER_Y1, -BACKER_T, 0)
-    # Notches for the bezel's tongue necks (the backer slides up under the tongue heads)
+    # Notches for the hook posts (the backer slides up under the hook tops)
     for sx in (-1, 1):
         x = sx * TONGUE_X
-        plate -= box(x - NECK_HW - NECK_FIT, x + NECK_HW + NECK_FIT, TONGUE_Y0 - NECK_FIT, FACE_H, -BACKER_T - 1, 1)
+        for px in (x - HEAD_HW, x + HEAD_HW - POST_W):
+            plate -= box(px - NECK_FIT, px + POST_W + NECK_FIT, TONGUE_Y0 - NECK_FIT, FACE_H, -BACKER_T - 1, 1)
     return plate
 
 
