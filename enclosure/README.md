@@ -37,11 +37,13 @@ PLA or PETG, 0.2 mm layers, 3 walls, 15–20% infill.
 |---|---|---|
 | `bezel.stl` | Face down (as exported) | None |
 | `backer.stl` | Flat | None |
-| `body.stl` | On its side, 176 mm tall (as exported) | Yes, for the two small screw tabs and the button tube only |
+| `body.stl` | Top down, 61.5 mm tall (as exported) | None |
 | `base.stl` | Flat | None |
 | `button_cap.stl` | Top down | None |
 
-The body needs a printer with at least 180 mm of build height. The look in the
+The body prints upside down: the flat strip of the top lies on the plate and the
+open bottom faces up. Small 45° ramps under the screw bosses and the bezel screw
+tabs hold them up while printing, so no supports are needed. The look in the
 photos comes from black "sparkle" or "galaxy" PLA, or a fuzzy-skin slicer setting
 on the outside walls.
 

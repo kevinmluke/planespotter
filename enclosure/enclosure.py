@@ -194,6 +194,11 @@ def make_body():
         x_wall = side * (BODY_W / 2 - WALL)
         ear = F * box(min(x_wall, x_wall - side * EAR_W), max(x_wall, x_wall - side * EAR_W), y - 4.5, y + 4.5,
                       -BACKER_T - EAR_T, -BACKER_T)
+        # 45 deg ramp above the ear, into the side wall: the body prints top down, so this
+        # is what holds the ear up while printing (no supports). It stops 1.2 mm short of
+        # the backer so the ribbon, folded round the backer's edge, still has room.
+        ramp = Polygon((x_wall, y + 4.5), (x_wall - side * EAR_W, y + 4.5), (x_wall, y + 4.5 + EAR_W), align=None)
+        ear += F * extrude(Plane.XY.offset(-BACKER_T - EAR_T) * ramp, amount=EAR_T - 1.2, dir=(0, 0, 1))
         ear -= F * cyl(x, y, -BACKER_T - EAR_T - 1, 0, 1.45)  # M2.5 clearance
         body += ear
 
@@ -203,6 +208,10 @@ def make_body():
             bx = sx * (BODY_W / 2 - WALL - 3.5)
             body += cyl(bx, y, WALL, 12.0, 3.5)
             body += box(min(bx, sx * (BODY_W / 2 - WALL)), max(bx, sx * (BODY_W / 2 - WALL)), y - 3.5, y + 3.5, WALL, 12.0)
+            # 45 deg ramp above the boss, into the side wall (support-free when printed top down)
+            xw = sx * (BODY_W / 2 - WALL)
+            ramp = Polygon((xw, 12.0), (xw - sx * 7.0, 12.0), (xw, 19.0), align=None)
+            body += extrude(Plane.XZ.offset(-y) * ramp, amount=3.5, both=True)
             body -= cyl(bx, y, WALL - 0.01, 10.5, 1.1)
 
     # USB-C opening in the back (open at the bottom so the plug's overmould fits)
@@ -270,7 +279,7 @@ def main():
     print_pose = {
         "bezel": Rot(180, 0, 0) * bezel,       # face down
         "backer": backer,
-        "body": Rot(0, -90, 0) * body,         # on its left side: no bridges, only the ears need support
+        "body": Rot(180, 0, 0) * body,         # top down: 61 mm tall, no supports
         "base": base,
         "button_cap": Rot(180, 0, 0) * cap,    # top down
     }
