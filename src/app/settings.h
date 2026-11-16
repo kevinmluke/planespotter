@@ -25,7 +25,7 @@ struct Settings {
   bool darkTheme = false;     // white on black
   uint16_t rangeKm = 30;      // closest-aircraft radius
   uint16_t rareRangeKm = 80;  // rare takeover radius
-  uint8_t rareLevel = 2;      // 0 off, 1 only very rare, 2 normal, 3 everything unusual
+  uint8_t rareLevel = 1;      // 0 off, 1 only very rare (default), 2 rare & military, 3 everything unusual
   bool issAlerts = true;
   // Updates
   bool autoUpdate = true;

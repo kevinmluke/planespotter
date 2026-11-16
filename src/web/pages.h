@@ -125,7 +125,7 @@ $("#upd").onclick=async()=>{await fetch("/api/update",{method:"POST"}).catch(()=
 $("#close").onclick=async()=>{await fetch("/api/close",{method:"POST"}).catch(()=>{})};
 (async()=>{try{await state()}catch(e){}const s=ST.settings||{};
 $("#theme").value=s.theme|0;$("#units").value=s.units??2;$("#clock24").value=s.clock24?1:0;$("#mode").value=s.mode|0;$("#range").value=s.range||30;$("#rareRange").value=s.rareRange||80;km();
-$("#rareLevel").value=s.rareLevel??2;$("#issAlerts").checked=s.issAlerts!==false;$("#autoUpdate").checked=s.autoUpdate!==false;
+$("#rareLevel").value=s.rareLevel??1;$("#issAlerts").checked=s.issAlerts!==false;$("#autoUpdate").checked=s.autoUpdate!==false;
 $("#ver").textContent="PlaneSpotter "+(ST.version||"");$("#mac").textContent=ST.mac||"";
 if(ST.connectedSsid){show("#wifiCurrent",true);show("#wifiPick",false)}else scan();
 if(ST.hasLocation){$("#townName").textContent=s.place||(s.lat.toFixed(3)+", "+s.lon.toFixed(3));show("#townChosen",true);show("#townPick",false)}

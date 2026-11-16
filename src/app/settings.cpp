@@ -37,7 +37,7 @@ void load(Settings& s) {
   s.darkTheme = p.getBool("dark", false);
   s.rangeKm = p.getUShort("range", 30);
   s.rareRangeKm = p.getUShort("rareRange", 80);
-  s.rareLevel = p.getUChar("rare", 2);
+  s.rareLevel = p.getUChar("rare", 1);
   s.issAlerts = p.getBool("issAlerts", true);
   s.autoUpdate = p.getBool("autoUpd", true);
   p.end();

@@ -7,9 +7,11 @@ and a 5.79" black-and-white e-paper panel (792 × 272).
   (city → city with progress), altitude and vertical rate, speed, heading,
   distance and direction from home. It also shows a side-view silhouette
   (63 families, including military) and a mini radar.
-- **Rare aircraft take over the screen:** Beluga, BelugaXL, Dreamlifter, A380,
-  An-124, B-52, V-22 and any military aircraft. Emergencies (squawk
-  7500/7600/7700, or an emergency declared by the crew) always win.
+- **Rare aircraft take over the screen:** by default only the very rare ones
+  (Beluga, BelugaXL, Dreamlifter, An-124, C-5, B-52, B-2, V-22, U-2, F-22...).
+  Settings can widen this to every military aircraft, or to anything unusual.
+  Emergencies (squawk 7500/7600/7700, or an emergency declared by the crew)
+  always win.
 - **ISS mode:** live position on a world map with day/night shading, the
   current orbit, sunlit/shadow state, and the next visible pass.
 - **ISS pass alerts:** 10 minutes before the ISS becomes visible from home, a
@@ -168,8 +170,8 @@ is older than 14 days, the ISS screen goes offline too.
 
 - **Rarity:** edit the last column of `data/families.csv`, or add a 4th column
   to a type in `data/aircraft_types.csv`. Then run
-  `python3 tools/gen_assets.py`. The thresholds are: "very rare only" ≥ 80,
-  "rare & military" ≥ 55, "anything unusual" ≥ 40. Military aircraft get at
+  `python3 tools/gen_assets.py`. The thresholds are: "very rare only" ≥ 80
+  (the default), "rare & military" ≥ 55, "anything unusual" ≥ 40. Military aircraft get at
   least 65.
 - **New aircraft types:** add a line to `data/aircraft_types.csv` (ICAO
   designator, family key, display name) and regenerate.

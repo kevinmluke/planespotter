@@ -141,7 +141,7 @@ void handleSave() {
   s.mode = static_cast<ui::Mode>(constrain(in["mode"] | 0, 0, 2));
   s.rangeKm = constrain(in["range"] | 30, 2, 150);
   s.rareRangeKm = constrain(in["rareRange"] | 80, s.rangeKm, 250);
-  s.rareLevel = constrain(in["rareLevel"] | 2, 0, 3);
+  s.rareLevel = constrain(in["rareLevel"] | 1, 0, 3);
   s.issAlerts = in["issAlerts"] | true;
   s.autoUpdate = in["autoUpdate"] | true;
 

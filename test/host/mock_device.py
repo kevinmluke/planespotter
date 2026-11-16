@@ -27,7 +27,7 @@ STATE = {
     "hasLocation": MODE == "settings", "tz": "CET-1CEST,M3.5.0,M10.5.0/3",
     "join": {"state": "idle", "ssid": ""},
     "settings": {"lang": 1 if MODE == "settings" else 0, "theme": 1, "units": 2, "clock24": False, "mode": 0, "range": 30,
-                 "rareRange": 80, "rareLevel": 2, "issAlerts": True, "autoUpdate": True,
+                 "rareRange": 80, "rareLevel": 1, "issAlerts": True, "autoUpdate": True,
                  "place": "Blagnac" if MODE == "settings" else "", "lat": 43.64, "lon": 1.39},
 }
 NETS = [{"ssid": "Maison-5G", "rssi": -48, "secure": True, "ent": False},
