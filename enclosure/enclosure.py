@@ -13,7 +13,7 @@ Five parts, printed separately:
   base        bottom plate with a cradle for the ESP32-S3 board
   button_cap  plunger that presses the 6 mm tactile button from the top
 
-Hardware: 6x M2.5 screws (2x 10 mm for bezel/backer, 4x 8 mm for the base),
+Hardware: 6x M2.5 x 8 mm screws (2 for bezel/backer, 4 for the base),
 4 rubber feet, a 6x6 mm tactile button, double-sided tape.
 
 Coordinates: X = width (left to right as seen from the front), Y = depth
@@ -123,7 +123,9 @@ def make_bezel():
     # Screw bosses behind the face, just outside the backer (they meet the body's ears)
     for x, y in BOSSES:
         plate += cyl(x, y, -BACKER_T, 0.01, 2.7)
-        plate -= cyl(x, y, -BACKER_T - 0.01, POCKET + SKIN - 0.8, 1.1)  # M2.5 self-tapping pilot
+        # M2.5 self-tapping pilot, blind 0.8 mm behind the face. Screw stack: 5 mm ear + 2 mm
+        # boss + 2.5 mm hole, so an 8 mm screw stops 1.5 mm short; a 10 mm one bulges the face.
+        plate -= cyl(x, y, -BACKER_T - 0.01, POCKET + SKIN - 0.8, 1.1)
     # Hooks that slide under the body's top wall. Their top is cut
     # horizontal, flush under the wall, so the bezel can't tip forward.
     under_wall = Location((0, 0, 0)) * box(-BODY_W, BODY_W, -50, 200, TOP_Z - WALL - 0.05, 300)

@@ -50,8 +50,9 @@ on the outside walls.
 
 ## Hardware
 
-- 2 × M2.5 × 10 mm screws (bezel and backer)
-- 4 × M2.5 × 8 mm screws (base)
+- 6 × M2.5 × 8 mm self-tapping screws (2 for the bezel, 4 for the base). Not
+  longer: a 10 mm screw goes right through the bezel's pilot hole and pushes
+  the front out
 - 4 rubber feet
 - 6 × 6 mm tactile button (wired to GPIO 0 and GND)
 - Double-sided tape (DESPI-C579 adapter, ESP32 board)
@@ -77,7 +78,10 @@ screws grip better than nylon ones.
    near that edge. Connect the jumper wires (see the wiring table in the main
    README).
 5. **Bezel into body.** Hook the top of the bezel under the body's top edge, swing
-   the bottom in, and fit the 2 × 10 mm screws from inside, through the tabs at
+   the bottom in, and fit two 8 mm screws from inside, through the tabs at
    the bottom. The tabs also clamp the backer's left and right edges.
+   **Stop as soon as the screw is snug.** It cuts its own thread in the
+   plastic, and the front of the bezel is only 0.8 mm thick in front of the
+   hole: over-tightening bows it out and leaves white stress marks.
 6. **Base.** Put the base in from below, with the USB-C ports lined up with the
    opening at the back, and fit the 4 × 8 mm screws. Stick on the rubber feet.
