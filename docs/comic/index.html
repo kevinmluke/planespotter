@@ -377,15 +377,14 @@ img.line-art { width: 100%; height: auto; background: var(--paper); }
   </div>
 
   <div class="panel s3 dots-r">
-    <div class="cap">Builder's warning!</div>
+    <div class="cap">Builder's tip!</div>
     <div class="sfx abs" style="right:12px; top:8px; transform:rotate(-6deg); font-size:40px" aria-hidden="true">HOLD IT!</div>
-    <p class="note" style="margin-top:28px">This case hasn't been test-printed yet. On your <b>first</b> unit, check two things before printing the rest:</p>
+    <p class="note" style="margin-top:28px">Clone boards and panels vary by a millimetre or two. If you buy parts from a new seller, check two things on the first unit before printing the rest:</p>
     <ol class="steps">
       <li><b>Board fit.</b> The cradle expects a 70 × 29 mm board. Measure yours.</li>
       <li><b>Screen window.</b> Print the bezel first, lay the panel in, and check no pixels are hidden.</li>
     </ol>
     <p class="note">If either is off, change the matching number at the top of <b>enclosure/enclosure.py</b> and regenerate the files.</p>
-    <div class="warn"><b>Also new:</b> the software hasn't run on a real panel yet. Expect to fine-tune on the first boot.</div>
   </div>
 
   <div class="panel s4">
@@ -662,13 +661,13 @@ img.line-art { width: 100%; height: auto; background: var(--paper); }
   <div class="panel s4">
     <div class="cap">For the builder: shipping a new version</div>
     <ol class="steps">
-      <li>Bump the number in the <b>VERSION</b> file and commit it.</li>
-      <li>Publish a test release. This runs the tests first and refuses if you have uncommitted changes:
-        <div class="term" style="margin-top:6px"><code>python3 tools/release.py --notes "What changed"</code><button class="copy" type="button" id="copy-release">Copy</button></div>
+      <li>Raise the number in the <b>VERSION</b> file (for example 1.0.1 to 1.0.2) and commit it. Displays only install a <b>higher</b> number than the one they're running, so never reuse one.</li>
+      <li>Publish a test release. This runs the tests first and refuses if you have uncommitted changes. Use PlatformIO's own Python, which has the signing library built in:
+        <div class="term" style="margin-top:6px"><code>~/.platformio/penv/bin/python tools/release.py --notes "What changed"</code><button class="copy" type="button" id="copy-release">Copy</button></div>
       </li>
       <li>Load it onto <b>your own</b> display over USB (<b>pio run -t upload</b>) and live with it for a couple of days. A test release never goes to anyone else.</li>
-      <li>Happy? Send it to everyone. Every display picks it up within a day:
-        <div class="term" style="margin-top:6px"><code>python3 tools/release.py --promote</code><button class="copy" type="button" id="copy-promote">Copy</button></div>
+      <li>Happy? Send it to everyone. Every display picks it up within a day, or straight away if someone taps <b>Check for updates</b> in its settings:
+        <div class="term" style="margin-top:6px"><code>~/.platformio/penv/bin/python tools/release.py --promote</code><button class="copy" type="button" id="copy-promote">Copy</button></div>
       </li>
     </ol>
   </div>

@@ -18,7 +18,8 @@ Overall size: about 176 × 88 × 62 mm.
 
 ## Before you print
 
-This model hasn't been test-printed yet. Check two things against your parts:
+Clone boards and panels vary by a millimetre or two. If you buy parts from a new
+seller, check two things against them before printing a batch:
 
 1. **ESP32 board size.** The base cradle assumes 70 × 29 mm. Measure your board
    and change `ESP_L` / `ESP_W` if needed.

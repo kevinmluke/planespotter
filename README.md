@@ -220,16 +220,25 @@ units you give away**, because that is where they will look for updates. The
 repository must be public so the displays can download releases without
 logging in. Until `GITHUB_REPO` is set, update checks are skipped.
 
-For each release, bump the number in `VERSION`, then run:
+For each release, raise the number in `VERSION` (displays only install a higher
+number than the one they run) and commit it, then run:
 
 ```bash
-python3 tools/release.py --notes "What changed"
+~/.platformio/penv/bin/python tools/release.py --notes "What changed"
 ```
 
-This builds, signs, and creates the GitHub release with `firmware-X.Y.Z.bin`
-and `manifest.json`. It uses the GitHub CLI (`gh auth login` once). Without the
-CLI, it prints the two files to upload by hand. Displays install the update
-within a day.
+This runs the tests, builds, signs, and publishes a GitHub **pre-release** with
+`firmware-X.Y.Z.bin` and `manifest.json`. No display installs a pre-release, so
+flash it on your own unit first. When you're happy, ship it to every display:
+
+```bash
+~/.platformio/penv/bin/python tools/release.py --promote
+```
+
+Displays install it within a day, or straight away from **Check for updates** in
+their settings. PlatformIO's Python is used because it includes the
+`cryptography` package needed for signing. The script uses the GitHub CLI
+(`gh auth login` once); without it, it prints the files to upload by hand.
 
 Hardware-level protection (ESP32 Secure Boot v2 and flash encryption) is
 possible on top of this, but it burns eFuses irreversibly. It is left out on
@@ -292,8 +301,6 @@ test/host/      host unit tests, astro cross-checks, screen previews, mock devic
 - The ISS visibility test uses a cylindrical Earth-shadow model and civil
   twilight (Sun below −6°). Its timings match Skyfield to within seconds.
   Brightness (magnitude) is not predicted.
-- The hardware hasn't been tested on a real panel yet. Expect to fine-tune
-  pins, SPI speed and refresh timing on the first boot.
 
 ---
 
