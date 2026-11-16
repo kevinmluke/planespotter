@@ -5,6 +5,7 @@
 //     prediction, OTA. Writes into `gShared` under `gLock`.
 //   - Arduino loop (core 1): button, web server, Wi-Fi provisioning, choosing
 //     what to show and drawing it.
+#include <esp_mac.h>
 #include <Arduino.h>
 #include <HTTPClient.h>
 #include <Preferences.h>
@@ -306,7 +307,7 @@ void connectSaved() {
 void openPortal(bool settingsMode) {
   if (gPortalOpen) return;
   uint8_t mac[6];
-  WiFi.macAddress(mac);
+  esp_read_mac(mac, ESP_MAC_WIFI_SOFTAP);  // from eFuse: valid even before Wi-Fi has started
   snprintf(gApSsid, sizeof(gApSsid), AP_SSID_PREFIX "%02X%02X", mac[4], mac[5]);
   static const char* words[] = {"skies", "radar", "orbit", "cloud", "wings", "comet"};
   snprintf(gApPass, sizeof(gApPass), "%s-%04u", words[esp_random() % 6], static_cast<unsigned>(esp_random() % 10000));

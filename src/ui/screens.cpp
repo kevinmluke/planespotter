@@ -201,8 +201,22 @@ void triangleUpDown(Canvas& cv, int x, int y, bool up, int size) {
   else cv.g.fillTriangle(x, y + size, x - size, y - size / 2, x + size, y - size / 2, gInk);
 }
 
+// Data codewords per version at ECC level M (ISO 18004 table 7), versions 1-10.
+// The QRCode library never reports data that doesn't fit (it just writes a broken
+// code), so the smallest version that holds the payload is picked here.
+uint8_t qrVersionFor(size_t len) {
+  static const uint8_t kDataBytesM[] = {16, 28, 44, 64, 86, 108, 124, 154, 182, 216};
+  for (uint8_t v = 1; v <= 10; v++) {
+    const size_t countBits = v < 10 ? 8 : 16;  // byte-mode character count field
+    if (4 + countBits + 8 * len <= 8u * kDataBytesM[v - 1]) return v;
+  }
+  return 0;  // too long
+}
+
 void drawQr(Canvas& cv, int x, int y, int maxSize, const char* payload) {
-  for (uint8_t version = 2; version <= 10; version++) {
+  const uint8_t first = qrVersionFor(std::strlen(payload));
+  if (first == 0) return;
+  for (uint8_t version = first; version <= 10; version++) {
     QRCode qr;
     uint8_t buf[400];
     if (qrcode_getBufferSize(version) > sizeof(buf)) break;
