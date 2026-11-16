@@ -25,7 +25,7 @@ void begin() {
   gSpi.begin(PIN_EPD_SCK, -1, PIN_EPD_MOSI, PIN_EPD_CS);
   gEpd.epd2.selectSPI(gSpi, SPISettings(10000000, MSBFIRST, SPI_MODE0));
   gEpd.init(0, true, 2, false);  // no serial diag, initial full refresh, reset pulse 2 ms
-  gEpd.setRotation(0);
+  gEpd.setRotation(2);  // ribbon on the right as seen from the front (see enclosure/)
   gEpd.setFullWindow();
   gU8.begin(gEpd);
 }
