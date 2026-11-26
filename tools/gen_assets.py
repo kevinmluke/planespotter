@@ -19,7 +19,6 @@ from PIL import Image, ImageDraw
 
 sys.path.insert(0, os.path.dirname(__file__))
 from silhouettes import BUILDERS  # noqa: E402
-import gen_cities  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GEN = os.path.join(ROOT, "src", "generated")
@@ -49,9 +48,10 @@ def c_str(s):
 
 def render_silhouette(sil, size):
     W, H = size
-    margin = 2
-    xs = [p[0] for _, pts, _, _ in sil.ops for p in pts]
-    ys = [p[1] for _, pts, _, _ in sil.ops for p in pts]
+    has_tech = any(op[0] == "shape" for op in sil.ops)
+    margin = 3 if has_tech else 2
+    xs = [p[0] for op in sil.ops for p in op[1]]
+    ys = [p[1] for op in sil.ops for p in op[1]]
     x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
     scale = min((W - 2 * margin) / (x1 - x0), (H - 2 * margin) / (y1 - y0))
     ss = SUPERSAMPLE
@@ -60,15 +60,17 @@ def render_silhouette(sil, size):
     ox = (W - (x1 - x0) * scale) / 2
     oy = (H - (y1 - y0) * scale) / 2
     px_per_unit = scale  # output pixels per design unit
+    w_scale = (min(W / 232.0, H / 80.0)) ** 0.65
 
     def tr(p):
         return ((ox + (p[0] - x0) * scale) * ss, (oy + (y1 - p[1]) * scale) * ss)
 
-    for kind, pts, fill, extra in sil.ops:
-        tp = [tr(p) for p in pts]
-        color = 0 if fill else 255
+    for op in sil.ops:
+        kind = op[0]
         if kind == "poly":
-            sep = extra
+            _, pts, fill, sep = op
+            tp = [tr(p) for p in pts]
+            color = 0 if fill else 255
             if sep:
                 # White halo around the shape, about `sep` output pixels wide (at least 1 px).
                 w = max(1.0, sep * min(1.6, px_per_unit * 0.8)) * ss
@@ -76,10 +78,32 @@ def render_silhouette(sil, size):
                 d.line(tp + [tp[0]], fill=255, width=int(round(w * 2)), joint="curve")
             d.polygon(tp, fill=color)
         elif kind == "line":
+            _, pts, fill, extra = op
+            tp = [tr(p) for p in pts]
+            color = 0 if fill else 255
             w = max(1.0, extra * px_per_unit) * ss
             d.line(tp, fill=color, width=int(round(w)), joint="curve")
+        elif kind == "shape":
+            _, pts, fill, stroke, width, closed, min_w = op
+            if W < min_w:
+                continue
+            tp = [tr(p) for p in pts]
+            if fill is not None:
+                d.polygon(tp, fill=0 if fill == 1 else 255)
+            if stroke is not None and width > 0 and len(tp) >= 2:
+                sc = 0 if stroke == 1 else 255
+                sw = max(1, int(round(max(1.0, width * w_scale) * ss)))
+                r = sw / 2.0
+                if closed:
+                    d.line(tp + [tp[0]], fill=sc, width=sw, joint="curve")
+                    x, y = tp[0]
+                    d.ellipse((x - r, y - r, x + r, y + r), fill=sc)
+                else:
+                    d.line(tp, fill=sc, width=sw, joint="curve")
+                    for x, y in (tp[0], tp[-1]):
+                        d.ellipse((x - r, y - r, x + r, y + r), fill=sc)
     img = img.resize((W, H), Image.BOX)
-    return img.point(lambda v: 0 if v < 140 else 255, mode="1")
+    return img.point(lambda v: 0 if v < (145 if has_tech else 140) else 255, mode="1")
 
 
 def bitmap_bytes(img):
@@ -335,6 +359,10 @@ int typeRarity(const TypeInfo* t) {{
     os.makedirs(os.path.join(ROOT, "docs"), exist_ok=True)
     sheet.save(os.path.join(ROOT, "docs", "silhouettes.png"))
 
+    if "--silhouettes-only" in sys.argv[1:]:
+        print(f"{len(families)} silhouettes -> {GEN}/silhouettes.cpp, docs/silhouettes.png")
+        return
+
     # ---- world map
     world = render_worldmap(MAP_SIZE)
     with open(os.path.join(GEN, "worldmap.cpp"), "w") as f:
@@ -343,6 +371,7 @@ int typeRarity(const TypeInfo* t) {{
         f.write(f"const uint8_t kWorldLand[] = {{\n{bytes_to_c(bitmap_bytes(world))}\n}};\n")
         f.write("\n}  // namespace db\n")
 
+    import gen_cities
     gen_cities.build()
     print(f"{len(families)} families, {len(types)} types, {len(airlines)} airlines -> {GEN}")
 
