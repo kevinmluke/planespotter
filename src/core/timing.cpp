@@ -30,6 +30,18 @@ void Backoff::failure(uint32_t nowMs, uint32_t retryAfterS) {
   waitMs_ = static_cast<uint32_t>(wait);
 }
 
+bool DailyBudget::take(int64_t nowUnix, uint32_t nowMs) {
+  // Clock set (after 2023-11-14): UTC days. Otherwise uptime days, kept apart by the sign.
+  const int64_t day = nowUnix > 1700000000 ? nowUnix / 86400 : -1 - static_cast<int64_t>(nowMs / 86400000UL);
+  if (day != day_) {
+    day_ = day;
+    used_ = 0;
+  }
+  if (used_ >= max_) return false;
+  used_++;
+  return true;
+}
+
 bool tleFetchDue(bool haveTle, int64_t lastOkUnix, int64_t nowUnix, int64_t refreshS, bool tried, uint32_t lastTryMs,
                  uint32_t nowMs, uint32_t retryMs) {
   const bool stale = !haveTle || lastOkUnix <= 0 || nowUnix < lastOkUnix || nowUnix - lastOkUnix >= refreshS;

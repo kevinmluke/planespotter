@@ -4,6 +4,7 @@
 #pragma once
 
 #include <cstdint>
+#include <climits>
 
 namespace timing {
 
@@ -34,6 +35,19 @@ class Backoff {
   uint32_t base_, max_;
   uint32_t sinceMs_ = 0, waitMs_ = 0;
   int failures_ = 0;
+};
+
+// At most `perDay` requests per day: per UTC day once the clock is set, otherwise per
+// 24 h of uptime. take() returns false (and counts nothing) once today's budget is spent.
+class DailyBudget {
+ public:
+  explicit DailyBudget(int perDay) : max_(perDay) {}
+  bool take(int64_t nowUnix, uint32_t nowMs);
+  int used() const { return used_; }
+
+ private:
+  int max_, used_ = 0;
+  int64_t day_ = INT64_MIN;
 };
 
 // Whether to download fresh ISS orbital elements: none cached, the last successful

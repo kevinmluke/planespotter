@@ -256,6 +256,17 @@ static void testTiming() {
   CHECK(b.ready(nearWrap) && b.failures() == 0);
   b.failure(1000, 300);  // 429 with Retry-After: 300
   CHECK(b.waitMs() == 300000 && !b.ready(300000) && b.ready(301000));
+
+  // Daily budget: per UTC day once the clock is set, per uptime day before that
+  timing::DailyBudget budget(3);
+  const int64_t utcDay = 1798070400;  // midnight UTC
+  CHECK(budget.take(utcDay + 10, 0) && budget.take(utcDay + 20, 0) && budget.take(utcDay + 30, 0));
+  CHECK(!budget.take(utcDay + 86399, 0) && budget.used() == 3);
+  CHECK(budget.take(utcDay + 86400, 0) && budget.used() == 1);  // next UTC day
+  timing::DailyBudget noClock(2);
+  CHECK(noClock.take(0, 1000) && noClock.take(0, 2000) && !noClock.take(0, 86399999));
+  CHECK(noClock.take(0, 86400000));  // 24 h of uptime later
+  CHECK(noClock.take(utcDay, 86400001) && noClock.used() == 1);  // clock just got set: new day
 }
 
 static void testTleRefresh() {

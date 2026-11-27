@@ -15,7 +15,10 @@ namespace feeds {
 namespace {
 
 // Per-service back-off after failures, rate limiting or server errors.
-timing::Backoff gAdsbBackoff[2] = {{ADSB_POLL_MS, 10 * 60 * 1000UL}, {ADSB_POLL_MS, 10 * 60 * 1000UL}};
+timing::Backoff gAdsbBackoff[2] = {{ADSB_POLL_MS, ADSB_BACKOFF_MAX_MS}, {ADSB_POLL_MS, ADSB_BACKOFF_MAX_MS}};
+
+// Daily request budget for the backup aggregator (see ADSB_FALLBACK_DAILY_MAX).
+timing::DailyBudget gFallbackBudget(ADSB_FALLBACK_DAILY_MAX);
 timing::Backoff gRouteBackoff(30000, 30 * 60 * 1000UL);
 timing::Backoff gHexdbBackoff(30000, 30 * 60 * 1000UL);
 timing::Backoff gTleBackoff(15 * 60 * 1000UL, 12 * 3600 * 1000UL);
@@ -130,22 +133,27 @@ AircraftResult fetchAircraft(double lat, double lon, float radiusKm, ac::Aircraf
   AircraftResult res;
   const int nm = std::min(250, static_cast<int>(std::ceil(radiusKm / 1.852)) + 1);
   char url[160];
-  JsonDocument doc;
-  static http::Result r;  // keeps the last status while every source is backing off
+  JsonDocument doc(http::psram());
+  static int primaryStatus = 0;  // the main source's last answer is the one worth showing
+  http::Result r;
+  bool tried = false;
   const char* fmts[] = {ADSB_URL_FMT, ADSB_FALLBACK_URL_FMT};
   for (int i = 0; i < 2; i++) {
     if (!gAdsbBackoff[i].ready(millis())) continue;
+    if (i == 1 && !gFallbackBudget.take(time(nullptr), millis())) continue;
     snprintf(url, sizeof(url), fmts[i], lat, lon, nm);
     doc.clear();
     r = http::getJson(url, doc, aircraftFilter());
+    tried = true;
+    if (i == 0) primaryStatus = r.status;
     if (r.ok()) {
       gAdsbBackoff[i].success();
       break;
     }
     gAdsbBackoff[i].failure(millis(), r.retryAfterS);
   }
-  res.status = r.status;
-  if (!r.ok()) return res;
+  res.status = r.ok() ? r.status : primaryStatus ? primaryStatus : r.status;
+  if (!tried || !r.ok()) return res;
 
   JsonArrayConst list = doc["ac"].is<JsonArrayConst>() ? doc["ac"].as<JsonArrayConst>() : doc["aircraft"].as<JsonArrayConst>();
   static ac::Aircraft all[160];

@@ -141,7 +141,7 @@ A comic-book guide to building, setting up, using and updating the display is in
 
 | Data | Source | Notes |
 |---|---|---|
-| Aircraft positions | [adsb.lol](https://adsb.lol) `/v2/lat/lon/dist` | Fallback: [adsb.fi](https://adsb.fi) open data. Polled every 8 s |
+| Aircraft positions | [adsb.fi](https://adsb.fi) open data `/v2/lat/lon/dist` | Fallback: [adsb.lol](https://adsb.lol), at most 150 requests a day (its keyless limit is 500 a day per IP). Polled every 15 s |
 | Route, airline | [adsbdb.com](https://www.adsbdb.com) | Fallback: [hexdb.io](https://hexdb.io) (ICAO codes only). Routes the aircraft clearly isn't flying are hidden |
 | Model, family, rarity | [data/aircraft_types.csv](data/aircraft_types.csv), [data/families.csv](data/families.csv) | Built into the firmware |
 | Airline names (fallback) | [data/airlines.csv](data/airlines.csv) | Includes military callsign prefixes |
@@ -322,8 +322,8 @@ people who run them.
 
 | Service | Used for | Terms |
 |---|---|---|
-| [adsb.lol](https://adsb.lol) | Live aircraft positions | Data under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/) |
-| [adsb.fi](https://adsb.fi) | Aircraft positions (fallback) | Open data for personal, non-commercial use |
+| [adsb.fi](https://adsb.fi) | Live aircraft positions | Open data for personal, non-commercial use |
+| [adsb.lol](https://adsb.lol) | Aircraft positions (fallback) | Data under the [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/) |
 | [adsbdb.com](https://www.adsbdb.com) | Routes and airlines | Free public API |
 | [hexdb.io](https://hexdb.io) | Routes (fallback) | Free public API |
 | [CelesTrak](https://celestrak.org) | ISS orbit (TLE) | Free; please keep downloads to a few a day |

@@ -17,8 +17,11 @@
 
 // ---------------------------------------------------------------------------
 // Data sources
-#define ADSB_URL_FMT "https://api.adsb.lol/v2/lat/%.4f/lon/%.4f/dist/%d"  // dist in NM, max 250
-#define ADSB_FALLBACK_URL_FMT "https://opendata.adsb.fi/api/v2/lat/%.4f/lon/%.4f/dist/%d"
+// Aircraft: adsb.fi first (no daily quota), adsb.lol only as a backup: without an API key
+// it allows 500 requests per day per public IP, shared by every display behind that IP.
+#define ADSB_URL_FMT "https://opendata.adsb.fi/api/v2/lat/%.4f/lon/%.4f/dist/%d"  // dist in NM, max 250
+#define ADSB_FALLBACK_URL_FMT "https://api.adsb.lol/v2/lat/%.4f/lon/%.4f/dist/%d"
+#define ADSB_FALLBACK_DAILY_MAX 150  // per display; leaves room for a few displays on one IP
 #define ROUTE_URL_FMT "https://api.adsbdb.com/v0/callsign/%s"
 #define ROUTE_FALLBACK_URL_FMT "https://hexdb.io/api/v1/route/icao/%s"
 #define TLE_URL "https://celestrak.org/NORAD/elements/gp.php?CATNR=25544&FORMAT=TLE"
@@ -32,7 +35,8 @@
 
 // ---------------------------------------------------------------------------
 // Timings (milliseconds unless noted)
-#define ADSB_POLL_MS 8000          // aircraft refresh; keep >= 5 s to be polite to free APIs
+#define ADSB_POLL_MS 15000         // aircraft refresh; several displays often share one IP's rate limit
+#define ADSB_BACKOFF_MAX_MS 60000  // longest wait after failures (offline screen appears at FRESH_OFFLINE_S)
 #define ROUTE_CACHE_SIZE 24
 #define ROUTE_RETRY_MS 300000       // don't re-ask for an unknown callsign for 5 min
 #define TLE_REFRESH_S (12 * 3600)   // orbital elements
